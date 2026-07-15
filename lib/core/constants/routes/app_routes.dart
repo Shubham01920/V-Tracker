@@ -1,0 +1,29 @@
+class AppRoutes {
+  static const String login = '/login';
+  static const String signUp = '/signUp';
+  static const String home = '/home';
+  static const String getStarted = '/getStarted';
+  static const String vehicleSearch = '/vehicleSearch';
+  static const String productDetail = '/productDetail';
+  static const String checkout = '/checkout';
+  static const String shop = '/shop';
+  static const String scratchCard = '/scratchCard';
+  static const String referral = '/referral';
+  static const String qrTab = '/qrTab';
+  static const String qrScanner = '/qrScanner';
+  static const String profile = '/profile';
+  static const String myVehicles = '/myVehicles';
+  static const String myOrders = '/myOrders';
+  static const String notifications = '/notifications';
+  static const String navigation = '/navigation';
+  static const String feedback = '/feedback';
+  static const String community = '/community';
+  static const String about = '/about';
+  static const String callHistory = '/callHistory';
+  static const String privacyPolicy = '/privacyPolicy';
+  static const String termsAndConditions = '/termsAndConditions';
+  static const String helpAndSupport = '/helpAndSupport';
+  static const String addressBook = '/addressBook';
+  static const String editProfile = '/editProfile';
+  static const String trackOrder = '/trackOrder';
+}
