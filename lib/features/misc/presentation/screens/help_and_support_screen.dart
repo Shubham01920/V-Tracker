@@ -104,7 +104,7 @@ class HelpAndSupportScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFF1F5F9), width: 1.5),
+        border: Border.all(color: AppColors.greyLight, width: 1.5),
       ),
       child: ExpansionTile(
         title: Text(

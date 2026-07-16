@@ -3,14 +3,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:snap_q/core/constants/app_colors.dart';
 import 'package:snap_q/core/constants/app_strings.dart';
 import 'package:snap_q/core/constants/app_text_styles.dart';
+import 'package:snap_q/core/routes/app_routes.dart';
 import 'package:snap_q/core/widgets/app_bar/vt_app_bar_2.dart';
 import 'package:snap_q/core/widgets/vt_button.dart';
-import 'package:snap_q/features/shop/presentation/shop_screen.dart';
-import 'package:snap_q/core/constants/routes/app_routes.dart';
 import 'package:snap_q/features/profile/data/models/address_model.dart';
-import 'package:snap_q/features/shop/presentation/widget/order_summary_card.dart';
-import 'package:snap_q/features/shop/presentation/widget/coupon_section.dart';
-import 'package:snap_q/features/shop/presentation/widget/redeem_points_section.dart';
+import 'package:snap_q/features/shop/presentation/screens/shop_screen.dart';
+import 'package:snap_q/features/shop/presentation/widgets/coupon_section.dart';
+import 'package:snap_q/features/shop/presentation/widgets/order_summary_card.dart';
+import 'package:snap_q/features/shop/presentation/widgets/redeem_points_section.dart';
 
 /// ── CHECKOUT SCREEN ─────────────────────────────────────────────────────────
 /// Manages the order checkout flow, displaying delivery address, order summary,

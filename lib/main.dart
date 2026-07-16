@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:snap_q/core/constants/routes/app_pages.dart';
-import 'package:snap_q/features/navigation/presentation/navigation_screen.dart';
+import 'package:snap_q/core/routes/app_pages.dart';
+import 'package:snap_q/features/auth/presentation/screens/get_started.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -14,8 +15,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'V Tracker',
       debugShowCheckedModeBanner: false,
-      routes: AppPages.routes,
-      home: const NavigationScreen(),
+      home: const GetStarted(),
+      onGenerateRoute: AppPages.generateRoute,
     );
   } 
 }
+

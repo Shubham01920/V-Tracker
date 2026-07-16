@@ -14,7 +14,8 @@ class LoginScreen extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: const Color(0xFFF8FAFC),
+        backgroundColor: AppColors.bg,
+        resizeToAvoidBottomInset: false,
         body: SafeArea(
           top: false,
           child: Column(
@@ -123,7 +124,7 @@ class LoginScreen extends StatelessWidget {
                           child: Container(
                             padding: const EdgeInsets.all(3),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF1F5F9),
+                              color: AppColors.greyLight,
                               borderRadius: BorderRadius.circular(100),
                             ),
                             child: TabBar(

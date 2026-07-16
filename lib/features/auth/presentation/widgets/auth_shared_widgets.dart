@@ -19,8 +19,9 @@ Widget buildOrDivider() {
 }
 
 Widget buildCompactSocialButton({
-  required IconData icon,
-  required Color iconColor,
+  IconData? icon,
+  Color? iconColor,
+  String? imagePath,
   required String label,
 }) {
   return Container(
@@ -34,7 +35,15 @@ Widget buildCompactSocialButton({
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(icon, color: iconColor, size: 20),
+        if (imagePath != null)
+          Image.asset(
+            imagePath,
+            width: 20,
+            height: 20,
+            fit: BoxFit.contain,
+          )
+        else if (icon != null)
+          Icon(icon, color: iconColor, size: 20),
         const SizedBox(width: 8),
         Text(
           label,
@@ -53,16 +62,16 @@ Widget buildSecureCard() {
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
     decoration: BoxDecoration(
-      color: const Color(0xFFF8FAFC),
+      color: AppColors.bg,
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: const Color(0xFFE2E8F0)),
+      border: Border.all(color: AppColors.borderLight),
     ),
     child: Row(
       children: [
         Container(
           padding: const EdgeInsets.all(10),
           decoration: const BoxDecoration(
-            color: Color(0xFFFEF3C7),
+            color: AppColors.goldLightBg,
             shape: BoxShape.circle,
           ),
           child: const Icon(
@@ -89,7 +98,7 @@ Widget buildSecureCard() {
                 'We never share your information with anyone. Your privacy is our priority.',
                 style: GoogleFonts.outfit(
                   fontSize: 12,
-                  color: const Color(0xFF64748B),
+                  color: AppColors.slate500,
                   height: 1.3,
                 ),
               ),

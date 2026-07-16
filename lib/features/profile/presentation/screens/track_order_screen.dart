@@ -209,7 +209,7 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    const Divider(height: 1, color: Color(0xFFE2E8F0)),
+                    const Divider(height: 1, color: AppColors.borderLight),
                     const SizedBox(height: 16),
                     Row(
                       children: [

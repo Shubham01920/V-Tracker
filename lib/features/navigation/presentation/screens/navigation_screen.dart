@@ -6,7 +6,7 @@ import 'package:snap_q/features/calls/presentation/screens/call_history_screen.d
 import 'package:snap_q/features/home/presentation/screens/home_screen.dart';
 import 'package:snap_q/features/profile/presentation/screens/profile_screen.dart';
 import 'package:snap_q/features/qr/presentation/screens/qr_tab_screen.dart';
-import 'package:snap_q/features/shop/presentation/shop_screen.dart';
+import 'package:snap_q/features/shop/presentation/screens/shop_screen.dart';
 
 // ── MAIN NAVIGATION SCREEN ─────────────────────────────
 class NavigationScreen extends StatefulWidget {
@@ -49,22 +49,26 @@ class _MainScreenState extends State<NavigationScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.bg,
+      extendBody: true,
       
       // PageView - isse horizontal swiping aur smooth animated switching page level pe milti hai
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-        children: _screens,
+      body: SafeArea(
+        bottom: false,
+        child: PageView(
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
+          children: _screens,
+        ),
       ),
 
       // Custom Floating Capsule Bottom Navigation Bar using google_nav_bar package
       bottomNavigationBar: SafeArea(
         child: Container(
-          margin: const EdgeInsets.only(left: 14, right: 14, bottom: 18),
+          margin: const EdgeInsets.only(left: 14, right: 14, bottom: 18, top: 10),
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           decoration: BoxDecoration(
             color: AppColors.navBar,

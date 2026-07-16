@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:snap_q/core/constants/app_colors.dart';
 import 'package:snap_q/core/constants/app_text_styles.dart';
-import 'package:snap_q/core/constants/routes/app_routes.dart';
+import 'package:snap_q/core/routes/app_routes.dart';
 
 class GetStarted extends StatelessWidget {
   const GetStarted({super.key});

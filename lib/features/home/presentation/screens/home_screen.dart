@@ -5,7 +5,7 @@ import 'package:snap_q/core/constants/app_text_styles.dart';
 import 'package:snap_q/core/widgets/app_bar/vt_app_bar.dart';
 import 'package:snap_q/core/widgets/vt_drawer.dart';
 import 'package:snap_q/core/widgets/vt_search_bar.dart';
-import 'package:snap_q/core/constants/routes/app_routes.dart';
+import 'package:snap_q/core/routes/app_routes.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.bg,
       drawer: VTDrawer(
         selectedIndex: _selectedIndex,
         onDestinationSelected: (index) {
@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
       appBar: const VTAppBar(),
-  body: SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Column(
@@ -89,104 +89,115 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 16),
 
               // ── Emergency QR Scan Card ──
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: AppColors.primaryNavy,
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: Row(
-                  children: [
-                    // Text and Button Content
-                    Expanded(
-                      flex: 11,
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              AppStrings.homeEmergencyTitle,
-                              style: AppTextStyles.headlineLarge(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            RichText(
-                              text: TextSpan(
-                                style: AppTextStyles.bodySmall(
-                                  color: Colors.white.withValues(alpha: 0.8),
-                                  fontSize: 12,
+              Stack(
+                alignment: Alignment.centerRight,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryNavy,
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Row(
+                      children: [
+                        // Text and Button Content
+                        Expanded(
+                          flex: 12,
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  AppStrings.homeEmergencyTitle,
+                                  style: AppTextStyles.headlineLarge(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
                                 ),
-                                children: const [
-                                  TextSpan(text: AppStrings.homePrivateLabel),
-                                  TextSpan(
-                                    text: '• ',
-                                    style: TextStyle(
+                                const SizedBox(height: 8),
+                                RichText(
+                                  text: TextSpan(
+                                    style: AppTextStyles.bodySmall(
+                                      color: Colors.white.withValues(alpha: 0.8),
+                                      fontSize: 12,
+                                    ),
+                                    children: const [
+                                      TextSpan(text: AppStrings.homePrivateLabel),
+                                      TextSpan(
+                                        text: '• ',
+                                        style: TextStyle(
+                                          color: AppColors.gold,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: AppStrings.homeInstantContactLabel,
+                                      ),
+                                      TextSpan(
+                                        text: AppStrings.homeNoAppsRequiredLabel,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 14),
+                                InkWell(
+                                  onTap: () {},
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 18,
+                                      vertical: 10,
+                                    ),
+                                    decoration: BoxDecoration(
                                       color: AppColors.gold,
-                                      fontWeight: FontWeight.bold,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          AppStrings.scanQrBtn,
+                                          style: AppTextStyles.labelLarge(
+                                            color: AppColors.primaryNavy,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        const Icon(
+                                          Icons.arrow_forward_rounded,
+                                          color: AppColors.primaryNavy,
+                                          size: 16,
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  TextSpan(text: AppStrings.homeInstantContactLabel),
-                                  TextSpan(text: AppStrings.homeNoAppsRequiredLabel),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 14),
-                            InkWell(
-                              onTap: () {},
-                              borderRadius: BorderRadius.circular(12),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 18,
-                                  vertical: 10,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.gold,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      AppStrings.scanQrBtn,
-                                      style: AppTextStyles.labelLarge(
-                                        color: AppColors.primaryNavy,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    const Icon(
-                                      Icons.arrow_forward_rounded,
-                                      color: AppColors.primaryNavy,
-                                      size: 16,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                    // Illustration image of hand holding phone
-                    Expanded(
-                      flex: 8,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 12, top: 12, bottom: 12),
-                        child: Image.asset(
-                          'assets/images/qr_phone_hand.png',
-                          fit: BoxFit.contain,
-                          height: 140,
+                        // Spacer to prevent text overlap with the positioned image on the right
+                        const Expanded(
+                          flex: 7,
+                          child: SizedBox(),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  // Positioned Image that doesn't affect container height
+                  Positioned(
+                  right: -15,
+                    child: Image.asset(
+                      'assets/images/qr_phone_hand.png',
+                      fit: BoxFit.contain,
+                      height: 180, // Image height can now be changed freely
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 20),
 
@@ -228,7 +239,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     VTSearchBar(
                       hintText: AppStrings.enterVehicleNumberHint,
                       onSearch: (value) {
-                        // TODO: Implement vehicle search logic
+                        if (value.trim().isNotEmpty) {
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.vehicleSearch,
+                            arguments: value.trim(),
+                          );
+                        }
                       },
                     ),
                   ],
@@ -295,83 +312,92 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 24),
 
-              // ── Refer & Earn Banner Card ──
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: AppColors.primaryNavy,
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: Row(
-                  children: [
-                    // Text details and invite link
-                    Expanded(
-                      flex: 11,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              AppStrings.referAndEarnTitle,
-                              style: AppTextStyles.headlineLarge(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              AppStrings.referAndEarnSubtitle,
-                              style: AppTextStyles.bodySmall(
-                                color: Colors.white.withValues(alpha: 0.8),
-                                fontSize: 12,
-                              ),
-                            ),
-                            const SizedBox(height: 12),
                             InkWell(
-                              onTap: () {},
-                              child: Row(
+                onTap: () => Navigator.pushNamed(context, AppRoutes.referral),
+                child: Stack(
+                  alignment: Alignment.centerRight,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryNavy,
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Row(
+                        children: [
+                          // Text details and invite link
+                          Expanded(
+                            flex: 12,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    AppStrings.inviteNowBtn,
-                                    style: AppTextStyles.bodyMedium(
-                                      color: AppColors.gold,
+                                    AppStrings.referAndEarnTitle,
+                                    style: AppTextStyles.headlineLarge(
+                                      color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 14,
+                                      fontSize: 16,
                                     ),
                                   ),
-                                  const SizedBox(width: 6),
-                                  const Icon(
-                                    Icons.arrow_forward_rounded,
-                                    color: AppColors.gold,
-                                    size: 14,
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    AppStrings.referAndEarnSubtitle,
+                                    style: AppTextStyles.bodySmall(
+                                      color: Colors.white.withValues(alpha: 0.8),
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  InkWell(
+                                    onTap: () {},
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          AppStrings.inviteNowBtn,
+                                          style: AppTextStyles.bodyMedium(
+                                            color: AppColors.gold,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 6),
+                                        const Icon(
+                                          Icons.arrow_forward_rounded,
+                                          color: AppColors.gold,
+                                          size: 14,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          // Spacer to prevent text overlap with the positioned image on the right
+                          const Expanded(
+                            flex: 7,
+                            child: SizedBox(),
+                          ),
+                        ],
                       ),
                     ),
-                    // Illustration image of a gift box
-                    Expanded(
-                      flex: 8,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 16, top: 12, bottom: 12),
-                        child: Image.asset(
-                          'assets/images/gift_box.png',
-                          fit: BoxFit.contain,
-                          height: 80,
-                        ),
+                    // Positioned Image that doesn't affect container height
+                    Positioned(
+                      right: 16,
+                      child: Image.asset(
+                        'assets/images/gift_box.png',
+                        fit: BoxFit.contain,
+                        height: 110, // Image height can now be changed freely
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 100),
             ],
           ),
         ),
@@ -394,10 +420,7 @@ class _HomeScreenState extends State<HomeScreen> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: const Color(0xFFF1F5F9),
-              width: 1.5,
-            ),
+            border: Border.all(color: AppColors.greyLight, width: 1.5),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,

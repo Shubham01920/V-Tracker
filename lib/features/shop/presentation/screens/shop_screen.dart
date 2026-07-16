@@ -5,7 +5,8 @@ import 'package:snap_q/core/constants/app_text_styles.dart';
 import 'package:snap_q/core/widgets/vt_search_bar.dart';
 import 'package:snap_q/core/widgets/app_bar/vt_app_bar_2.dart';
 import 'package:snap_q/core/widgets/vt_button.dart';
-import 'package:snap_q/core/constants/routes/app_routes.dart';
+import 'package:snap_q/core/routes/app_routes.dart';
+import 'package:snap_q/features/shop/data/cart_manager.dart';
 
 // Product data model for the shop items
 class Product {
@@ -84,9 +85,21 @@ class _ShopScreenState extends State<ShopScreen> {
         : _allProducts.where((p) => p.category == _selectedCategory).toList();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
-      appBar: const VTAppBar2(
-        title: "Shop",
+      backgroundColor: AppColors.bg,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: ListenableBuilder(
+          listenable: CartManager(),
+          builder: (context, _) {
+            return VTAppBar2(
+              title: "Shop",
+              actionBadgeCount: CartManager().totalItems,
+              onActionPressed: () {
+                Navigator.pushNamed(context, AppRoutes.cart);
+              },
+            );
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -126,7 +139,7 @@ class _ShopScreenState extends State<ShopScreen> {
               child: ListView.builder(
                 itemCount: filteredProducts.length,
                 physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.only(bottom: 24),
+                padding: const EdgeInsets.only(bottom: 100),
                 itemBuilder: (context, index) {
                   final product = filteredProducts[index];
                   return _buildProductCard(product);
@@ -153,7 +166,7 @@ class _ShopScreenState extends State<ShopScreen> {
         margin: const EdgeInsets.only(right: 8),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: isActive ? AppColors.primaryNavy : const Color(0xFFF1F5F9),
+          color: isActive ? AppColors.primaryNavy : AppColors.greyLight,
           borderRadius: BorderRadius.circular(12),
           boxShadow: isActive
               ? [
@@ -203,7 +216,7 @@ class _ShopScreenState extends State<ShopScreen> {
               decoration: const BoxDecoration(
                 border: Border(
                   right: BorderSide(
-                    color: Color(0xFFF1F5F9),
+                    color: AppColors.greyLight,
                     width: 1.5,
                   ),
                 ),

@@ -114,23 +114,24 @@ class _CallHistoryScreenState extends State<CallHistoryScreen> {
                           ),
                         ),
                       )
-                    : ListView.separated(
-                        itemCount: filteredLogs.length,
-                        physics: const BouncingScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          final log = filteredLogs[index];
-                          return CallHistoryCard(
-                            type: log.type,
-                            vehicleDetails: log.vehicleDetails,
-                            dateTime: log.dateTime,
-                            onTap: () {
-                              // Call item tapped handler
-                            },
-                          );
-                        },
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(height: 12),
-                      ),
+                      : ListView.separated(
+                          itemCount: filteredLogs.length,
+                          physics: const BouncingScrollPhysics(),
+                          padding: const EdgeInsets.only(bottom: 100),
+                          itemBuilder: (context, index) {
+                            final log = filteredLogs[index];
+                            return CallHistoryCard(
+                              type: log.type,
+                              vehicleDetails: log.vehicleDetails,
+                              dateTime: log.dateTime,
+                              onTap: () {
+                                // Call item tapped handler
+                              },
+                            );
+                          },
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 12),
+                        ),
               ),
               const SizedBox(height: 20),
             ],
@@ -156,7 +157,7 @@ class _CallHistoryScreenState extends State<CallHistoryScreen> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryNavy : const Color(0xFFF1F5F9),
+          color: isSelected ? AppColors.primaryNavy : AppColors.greyLight,
           borderRadius: BorderRadius.circular(100),
           boxShadow: isSelected
               ? [

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:snap_q/core/constants/app_colors.dart';
 import 'package:snap_q/core/constants/app_strings.dart';
 import 'package:snap_q/core/constants/app_text_styles.dart';
+import 'package:snap_q/core/routes/app_routes.dart';
 
 class VTAppBar extends StatelessWidget implements PreferredSizeWidget {
   const VTAppBar({super.key});
@@ -51,7 +52,7 @@ class VTAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
         IconButton(
-          onPressed: () {},
+          onPressed: () => Navigator.pushNamed(context, AppRoutes.cart),
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(),
           icon: const Icon(
@@ -68,10 +69,13 @@ class VTAppBar extends StatelessWidget implements PreferredSizeWidget {
               width: 1,
             ),
           ),
-          child: const CircleAvatar(
-            radius: 18,
-            backgroundImage: NetworkImage(
-              'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100',
+          child: InkWell(
+            onTap: () => Navigator.pushNamed(context, AppRoutes.editProfile),
+            child: const CircleAvatar(
+              radius: 18,
+              backgroundImage: NetworkImage(
+                'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100',
+              ),
             ),
           ),
         ),

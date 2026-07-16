@@ -5,8 +5,9 @@ import 'package:snap_q/core/constants/app_strings.dart';
 import 'package:snap_q/core/constants/app_text_styles.dart';
 import 'package:snap_q/core/widgets/app_bar/vt_app_bar_2.dart';
 import 'package:snap_q/core/widgets/vt_button.dart';
-import 'package:snap_q/core/constants/routes/app_routes.dart';
-import 'package:snap_q/features/shop/presentation/shop_screen.dart';
+import 'package:snap_q/core/routes/app_routes.dart';
+import 'package:snap_q/features/shop/presentation/screens/shop_screen.dart';
+import 'package:snap_q/features/shop/data/cart_manager.dart';
 
 /// ── PRODUCT DETAILS SCREEN ──────────────────────────────────────────────────
 /// Displays comprehensive details about a selected product, including an image
@@ -352,10 +353,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               VTButton(
                 text: AppStrings.buyNowBtn,
                 onPressed: () {
+                  CartManager().addProduct(widget.product);
                   Navigator.pushNamed(
                     context,
-                    AppRoutes.checkout,
-                    arguments: widget.product,
+                    AppRoutes.cart,
                   );
                 },
                 backgroundColor: AppColors.gold,

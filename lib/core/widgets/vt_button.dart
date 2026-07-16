@@ -40,7 +40,7 @@ class VTButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor ?? AppColors.gold,
           foregroundColor: textColor ?? AppColors.primaryNavy,
-          padding: padding ?? const EdgeInsets.symmetric(vertical: 14),
+          padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
           disabledBackgroundColor:
               (backgroundColor ?? AppColors.gold).withValues(alpha: 0.5),
           shape: RoundedRectangleBorder(

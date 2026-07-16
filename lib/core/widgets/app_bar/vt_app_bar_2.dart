@@ -10,6 +10,7 @@ class VTAppBar2 extends StatelessWidget implements PreferredSizeWidget {
   final Color backgroundColor;
   final bool showBackButton;
   final Color? actionIconColor;
+  final int? actionBadgeCount;
 
   const VTAppBar2({
     super.key,
@@ -20,6 +21,7 @@ class VTAppBar2 extends StatelessWidget implements PreferredSizeWidget {
     this.backgroundColor = const Color(0xFFF8FAFC),
     this.showBackButton = false,
     this.actionIconColor,
+    this.actionBadgeCount,
   });
 
   @override
@@ -54,11 +56,28 @@ class VTAppBar2 extends StatelessWidget implements PreferredSizeWidget {
             onPressed: onActionPressed ?? () {},
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
-            icon: Icon(
-              actionIcon,
-              size: 28,
-              color: actionIconColor ?? AppColors.primaryNavy,
-            ),
+            icon: actionBadgeCount != null && actionBadgeCount! > 0
+                ? Badge(
+                    label: Text(
+                      '$actionBadgeCount',
+                      style: const TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    backgroundColor: AppColors.error,
+                    child: Icon(
+                      actionIcon,
+                      size: 28,
+                      color: actionIconColor ?? AppColors.primaryNavy,
+                    ),
+                  )
+                : Icon(
+                    actionIcon,
+                    size: 28,
+                    color: actionIconColor ?? AppColors.primaryNavy,
+                  ),
           ),
           const SizedBox(width: 16),
         ],
@@ -69,3 +88,4 @@ class VTAppBar2 extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
+

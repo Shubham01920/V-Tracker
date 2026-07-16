@@ -5,7 +5,7 @@ import 'package:snap_q/core/constants/app_spacing.dart';
 import 'package:snap_q/core/constants/app_strings.dart';
 import 'package:snap_q/core/constants/app_text_styles.dart';
 import 'package:snap_q/core/widgets/app_bar/vt_app_bar_2.dart';
-import 'package:snap_q/core/constants/routes/app_routes.dart';
+import 'package:snap_q/core/routes/app_routes.dart';
 
 /// ── PROFILE & SETTINGS SCREEN ──────────────────────────────────────────────
 /// Displays the user's profile picture, contact details, edit options,
@@ -208,7 +208,7 @@ class ProfileScreen extends StatelessWidget {
               isDestructive: true,
             ),
             
-            const SizedBox(height: 32),
+            const SizedBox(height: 100),
           ],
         ),
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:snap_q/core/constants/app_colors.dart';
 import 'package:snap_q/core/constants/app_strings.dart';
 import 'package:snap_q/core/constants/app_text_styles.dart';
+import 'package:snap_q/core/routes/app_routes.dart';
 
 class VTDrawer extends StatelessWidget {
   final int selectedIndex;
@@ -122,24 +123,60 @@ class VTDrawer extends StatelessWidget {
           label: Text(AppStrings.drawerHelpAndSupport),
         ),
 
-        Container(
-          padding: const EdgeInsets.all(16),
-          margin: const EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 20),
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: AppColors.navyLight,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        InkWell(
+          onTap: () {
+            Navigator.pop(context); // Close the drawer
+            Navigator.pushNamed(context, AppRoutes.referral);
+          },
+          child: Stack(
+            alignment: Alignment.centerRight,
             children: [
-              Text(
-                AppStrings.drawerReferAndEarn,
-                style: AppTextStyles.labelLarge(color: AppColors.white),
+              Container(
+                padding: const EdgeInsets.all(16),
+                margin: const EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 20),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: AppColors.navyLight,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 12,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            AppStrings.drawerReferAndEarn,
+                            style: AppTextStyles.labelLarge(color: AppColors.white),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            AppStrings.drawerReferAndEarnSubtitle,
+                            style: AppTextStyles.bodyMedium(
+                              color: AppColors.white.withValues(alpha: 0.8),
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Expanded(
+                      flex: 5,
+                      child: SizedBox(),
+                    ),
+                  ],
+                ),
               ),
-              Text(
-                AppStrings.drawerReferAndEarnSubtitle,
-                style: AppTextStyles.bodyMedium(color: AppColors.white),
+              Positioned(
+                right: 20, 
+                bottom: 5,// Account for container margin and padding
+                child: Image.asset(
+                  'assets/images/coin.png',
+                  fit: BoxFit.contain,
+                  height: 120, // Height can be increased freely
+                ),
               ),
             ],
           ),

@@ -400,14 +400,14 @@ class _ScratchCardScreenState extends State<ScratchCardScreen> {
                         size: 38, color: AppColors.textSecondary)
                   ] else if (isCashback) ...[
                     const CircleAvatar(
-                      backgroundColor: Color(0xFFE8F5E9),
+                      backgroundColor: AppColors.greenLightBg,
                       radius: 20,
                       child: Icon(Icons.account_balance_wallet_outlined,
                           color: AppColors.success, size: 22),
                     )
                   ] else ...[
                     const CircleAvatar(
-                      backgroundColor: Color(0xFFFEF3C7),
+                      backgroundColor: AppColors.goldLightBg,
                       radius: 20,
                       child: Icon(Icons.confirmation_number_outlined,
                           color: AppColors.gold, size: 22),
@@ -528,7 +528,7 @@ class _ScratchCardScreenState extends State<ScratchCardScreen> {
                     right: 0,
                     child: Container(
                       decoration: const BoxDecoration(
-                        color: Color(0xFF1E293B), // Premium Slate Gray
+                        color: AppColors.slate800, // Premium Slate Gray
                         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                       ),
                       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),

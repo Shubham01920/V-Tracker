@@ -45,7 +45,7 @@ class ScratchCardModalContent extends StatelessWidget {
                   ),
                 ] else ...[
                   const CircleAvatar(
-                    backgroundColor: Color(0xFFE8F5E9),
+                    backgroundColor: AppColors.greenLightBg,
                     radius: 28,
                     child: Icon(
                       Icons.account_balance_wallet_rounded,
@@ -74,7 +74,7 @@ class ScratchCardModalContent extends StatelessWidget {
                 ],
               ] else ...[
                 const CircleAvatar(
-                  backgroundColor: Color(0xFFFEF3C7),
+                  backgroundColor: AppColors.goldLightBg,
                   radius: 28,
                   child: Icon(
                     Icons.confirmation_number_rounded,

@@ -5,7 +5,7 @@ import 'package:snap_q/core/constants/app_text_styles.dart';
 import 'package:snap_q/core/utils/dynamic_snackbar.dart';
 import 'package:snap_q/core/utils/snackbar_helper.dart';
 import 'package:snap_q/core/widgets/vt_button.dart';
-import 'package:snap_q/core/constants/routes/app_routes.dart';
+import 'package:snap_q/core/routes/app_routes.dart';
 
 /// Placeholder tab shown inside the bottom-nav PageView.
 /// Tapping the large CTA requests camera permission, then opens [QrScannerScreen].

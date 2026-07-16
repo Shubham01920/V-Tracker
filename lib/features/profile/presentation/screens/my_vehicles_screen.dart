@@ -157,7 +157,7 @@ class MyVehiclesScreen extends StatelessWidget {
                                   vertical: 5,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFF1F5F9),
+                                  color: AppColors.greyLight,
                                   borderRadius: BorderRadius.circular(6),
                                   border: Border.all(
                                     color: AppColors.grey.withValues(alpha: 0.3),
@@ -197,7 +197,7 @@ class MyVehiclesScreen extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 12),
-                          const Divider(height: 1, color: Color(0xFFE2E8F0)),
+                          const Divider(height: 1, color: AppColors.borderLight),
                           const SizedBox(height: 8),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
