@@ -1,0 +1,82 @@
+{
+  "id": "BNK-01",
+  "name": "Get bank account",
+  "group": "Bank, KYC and wallet",
+  "method": "GET",
+  "path": "/v1/me/bank-account",
+  "url": "{{baseUrl}}/v1/me/bank-account",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Bank Details",
+    "Withdraw"
+  ],
+  "purpose": "Masked bank record (last 4 only).",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/me/bank-account",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "bankName": "HDFC Bank",
+          "accountLast4": "0192",
+          "accountMasked": "XXXX XXXX 0192",
+          "ifsc": "HDFC0001234",
+          "holderName": "Shubham Maurya",
+          "branch": "Bengaluru - Koramangala",
+          "upiMasked": "sh***@okhdfc",
+          "status": "VERIFIED",
+          "verifiedAt": "2026-10-23T13:48:45.387Z",
+          "cooldownUntil": null
+        },
+        "requestId": "94f6c1e9-645e-4b1e-bb78-3c7cd354eed9"
+      }
+    },
+    "errors": [
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "No bank account saved yet"
+          },
+          "requestId": "3514ecaf-af05-4885-9430-f7e230e20641"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/me/bank-account\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "wallet.test.js"
+    ],
+    "statusesSeenInTests": [
+      "404 NOT_FOUND",
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "id": "CFG-01",
+  "name": "App config",
+  "group": "Content, support, config and lookups",
+  "method": "GET",
+  "path": "/v1/config",
+  "url": "{{baseUrl}}/v1/config",
+  "auth": "None",
+  "webhook": false,
+  "calledBy": [
+    "Splash and session check"
+  ],
+  "purpose": "Minimum app version, maintenance flag, limits and feature flags.",
+  "request": {
+    "headers": {
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/config",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "minAppVersion": "1.0.0",
+          "latestAppVersion": "1.0.0",
+          "maintenance": false,
+          "supportContact": {
+            "email": "support@vtracker.example",
+            "phone": "+91 80000 00000",
+            "hours": "Mon-Sat, 9:00 AM - 7:00 PM IST"
+          },
+          "minWithdrawPaise": 50000,
+          "maxWithdrawPaise": 5000000,
+          "fastagMinRechargePaise": 10000,
+          "deliveryFeePaise": 6000,
+          "currency": "INR",
+          "scanBaseUrl": "http://localhost:5000/s",
+          "featureFlags": {
+            "googleSignIn": true,
+            "referralPayouts": true,
+            "fastag": true,
+            "documentVault": true,
+            "withdrawals": true
+          }
+        },
+        "requestId": "54a50d4c-beda-497f-9cb7-667b1b7408af"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/config\"",
+  "testing": {
+    "testedBy": [
+      "content.test.js",
+      "security.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

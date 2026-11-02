@@ -1,0 +1,73 @@
+{
+  "id": "RWD-01",
+  "name": "List rewards",
+  "group": "Rewards, referral and payouts",
+  "method": "GET",
+  "path": "/v1/rewards",
+  "url": "{{baseUrl}}/v1/rewards",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Rewards"
+  ],
+  "purpose": "Scratch cards. The value of an unscratched card is never sent.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {
+      "status": "UNSCRATCHED|SCRATCHED|EXPIRED | optional"
+    },
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/rewards",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "items": [
+            {
+              "id": "6adb65aad68566999ab149a1",
+              "title": "Referral Reward",
+              "subtitle": "A friend joined with your code",
+              "type": "CASHBACK",
+              "source": "REFERRAL",
+              "status": "UNSCRATCHED",
+              "expiresAt": "2027-01-21T13:48:26.584Z",
+              "createdAt": "2026-10-23T13:48:26.585Z",
+              "scratchedAt": null,
+              "result": null
+            }
+          ]
+        },
+        "requestId": "2bb42ba6-9b6b-41e4-8508-61cec0861c78"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/rewards\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "referral.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

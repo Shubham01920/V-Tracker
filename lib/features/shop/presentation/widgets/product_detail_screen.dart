@@ -49,10 +49,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     // Set up 6 carousel images using both the specific vehicle shop asset and the generic detail sticker
     _carouselImages = [
       widget.product.imagePath,
-      'assets/images/qr_sticker_detail.png',
       'assets/images/qr_phone_hand.png',
+      'assets/images/get_started.png',
       widget.product.imagePath,
-      'assets/images/qr_sticker_detail.png',
+      'assets/images/qr_phone_hand.png',
       'assets/images/get_started.png',
     ];
   }
@@ -132,7 +132,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     itemBuilder: (context, index) {
                       final imagePath = _carouselImages[index];
                       // Scale sticker mockup full screen, fit vehicle graphics inside
-                      final isStickerMockup = imagePath.contains('qr_sticker_detail') || imagePath.contains('qr_phone_hand');
+                      final isStickerMockup = imagePath.contains('qr_phone_hand');
                       return Image.asset(
                         imagePath,
                         fit: isStickerMockup ? BoxFit.cover : BoxFit.contain,

@@ -1,0 +1,157 @@
+{
+  "id": "BNK-02",
+  "name": "Save bank account",
+  "group": "Bank, KYC and wallet",
+  "method": "PUT",
+  "path": "/v1/me/bank-account",
+  "url": "{{baseUrl}}/v1/me/bank-account",
+  "auth": "Bearer + recent re-authentication",
+  "webhook": false,
+  "calledBy": [
+    "Bank Details"
+  ],
+  "purpose": "Save and verify (name match). Changing the account pauses withdrawals for 24 h.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "holderName": "string | required",
+      "bankName": "string | optional",
+      "accountNumber": "string | required | 8-18 digits",
+      "confirmAccountNumber": "string | required",
+      "ifsc": "string | required",
+      "branch": "string | optional",
+      "upiId": "string | optional",
+      "currentPassword": "string | required if login older than 15 min"
+    },
+    "example": {
+      "url": "/v1/me/bank-account",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "holderName": "Shubham Maurya",
+        "accountNumber": "50100123450192",
+        "confirmAccountNumber": "50100123450192",
+        "ifsc": "HDFC0001234",
+        "upiId": "shubham@okhdfc",
+        "currentPassword": "Secret@123"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "bankName": "HDFC Bank",
+          "accountLast4": "0192",
+          "accountMasked": "XXXX XXXX 0192",
+          "ifsc": "HDFC0001234",
+          "holderName": "Shubham Maurya",
+          "branch": "Bengaluru - Koramangala",
+          "upiMasked": "sh***@okhdfc",
+          "status": "VERIFIED",
+          "verifiedAt": "2026-10-23T13:48:45.387Z",
+          "cooldownUntil": null
+        },
+        "requestId": "d42b4622-d9f3-43c3-9d29-bb6aade44446"
+      }
+    },
+    "errors": [
+      {
+        "code": "IFSC_INVALID",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "IFSC_INVALID",
+            "message": "IFSC code not found"
+          },
+          "requestId": "deb7a890-bc4f-4efe-85fe-dc3a6f1b10ae"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "ACCOUNT_MISMATCH",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "ACCOUNT_MISMATCH",
+            "message": "Account numbers do not match",
+            "details": [
+              {
+                "field": "confirmAccountNumber",
+                "issue": "mismatch"
+              }
+            ]
+          },
+          "requestId": "e4f20a86-4ec9-4fba-90a4-1e758e91a844"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "NAME_MISMATCH",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "NAME_MISMATCH",
+            "message": "Account holder name must match your verified name",
+            "details": [
+              {
+                "field": "holderName",
+                "issue": "mismatch"
+              }
+            ]
+          },
+          "requestId": "3b82b1d1-96fe-4106-b844-5604b1fee3e8"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "REAUTH_REQUIRED",
+        "status": 401,
+        "example": {
+          "error": {
+            "code": "REAUTH_REQUIRED",
+            "message": "Please confirm your password to continue",
+            "details": [
+              {
+                "field": "currentPassword",
+                "issue": "required"
+              }
+            ]
+          },
+          "requestId": "14aa3e88-b98a-465f-b2c5-637630edcf3d"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X PUT \"http://localhost:5000/v1/me/bank-account\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"holderName\":\"Shubham Maurya\",\"accountNumber\":\"50100123450192\",\"confirmAccountNumber\":\"50100123450192\",\"ifsc\":\"HDFC0001234\",\"upiId\":\"shubham@okhdfc\",\"currentPassword\":\"Secret@123\"}'",
+  "testing": {
+    "testedBy": [
+      "wallet.test.js"
+    ],
+    "statusesSeenInTests": [
+      "422 ACCOUNT_MISMATCH",
+      "422 NAME_MISMATCH",
+      "422 IFSC_INVALID",
+      "401 REAUTH_REQUIRED",
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

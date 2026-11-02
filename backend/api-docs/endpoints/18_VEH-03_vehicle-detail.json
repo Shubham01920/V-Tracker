@@ -1,0 +1,85 @@
+{
+  "id": "VEH-03",
+  "name": "Vehicle detail",
+  "group": "Vehicles, QR, contacts and public scan",
+  "method": "GET",
+  "path": "/v1/vehicles/{id}",
+  "url": "{{baseUrl}}/v1/vehicles/{id}",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "My Vehicles (Manage QR)"
+  ],
+  "purpose": "One vehicle with label code, activation date and 30-day scan count.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "id": "string | required"
+    },
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/vehicles/6adb65b88ee1a60d3a13945a",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "id": "6adb65b88ee1a60d3a13945a",
+          "registrationNumber": "KA17SP9770",
+          "type": "FOUR_WHEELER",
+          "model": "Hyundai Creta",
+          "color": "",
+          "qr": {
+            "code": "QR-CAR-90002",
+            "status": "ACTIVE",
+            "activatedAt": "2026-10-23T13:48:40.510Z",
+            "scanCount30d": 1
+          },
+          "createdAt": "2026-10-23T13:48:40.225Z"
+        },
+        "requestId": "5ac543f3-5b8b-40ca-9e96-cd77399ba12c"
+      }
+    },
+    "errors": [
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "Vehicle not found"
+          },
+          "requestId": "de118ad9-b139-4791-aeea-09a7cdb88f6b"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/vehicles/6adb65b88ee1a60d3a13945a\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "404 NOT_FOUND"
+    ],
+    "passed": true
+  }
+}

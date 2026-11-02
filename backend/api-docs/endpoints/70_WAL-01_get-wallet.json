@@ -1,0 +1,69 @@
+{
+  "id": "WAL-01",
+  "name": "Get wallet",
+  "group": "Bank, KYC and wallet",
+  "method": "GET",
+  "path": "/v1/wallet",
+  "url": "{{baseUrl}}/v1/wallet",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Withdraw"
+  ],
+  "purpose": "Withdrawable and held balance, limits, KYC and bank state.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/wallet",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "availablePaise": 10000,
+          "heldPaise": 0,
+          "lifetimeCreditedPaise": 10000,
+          "lifetimeWithdrawnPaise": 0,
+          "minWithdrawPaise": 50000,
+          "maxWithdrawPaise": 5000000,
+          "currency": "INR",
+          "kycStatus": "NOT_SUBMITTED",
+          "bankStatus": "NOT_SUBMITTED",
+          "bankCooldownUntil": null,
+          "upiAvailable": false
+        },
+        "requestId": "ce9793ff-a9b7-43a6-9c96-e16ff24a042d"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/wallet\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "referral.test.js",
+      "wallet.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

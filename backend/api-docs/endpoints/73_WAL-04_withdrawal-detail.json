@@ -1,0 +1,89 @@
+{
+  "id": "WAL-04",
+  "name": "Withdrawal detail",
+  "group": "Bank, KYC and wallet",
+  "method": "GET",
+  "path": "/v1/withdrawals/{id}",
+  "url": "{{baseUrl}}/v1/withdrawals/{id}",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Withdraw History"
+  ],
+  "purpose": "One request with UTR and failure reason.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "id": "string | required"
+    },
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/withdrawals/6adb65bd71f497c38a204147",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "id": "6adb65bd71f497c38a204147",
+          "txnId": "TXN17927633256964863",
+          "amountPaise": 250000,
+          "mode": "BANK",
+          "status": "COMPLETED",
+          "bank": {
+            "bankName": "HDFC Bank",
+            "accountLast4": "0192",
+            "upiMasked": null,
+            "ifsc": "HDFC0001234"
+          },
+          "createdAt": "2026-10-23T13:48:45.696Z",
+          "completedAt": "2026-10-23T13:48:45.730Z",
+          "utr": "HDFCN52026102399",
+          "failureReason": null,
+          "providerStatus": "COMPLETED"
+        },
+        "requestId": "55116261-84be-4f25-86fd-4e68f096642b"
+      }
+    },
+    "errors": [
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "Withdrawal not found"
+          },
+          "requestId": "6fa4b59f-33ad-4920-8d1e-eaa57d70ec9f"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/withdrawals/6adb65bd71f497c38a204147\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "wallet.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "404 NOT_FOUND"
+    ],
+    "passed": true
+  }
+}

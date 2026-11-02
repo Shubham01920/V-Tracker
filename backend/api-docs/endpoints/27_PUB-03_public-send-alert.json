@@ -1,0 +1,111 @@
+{
+  "id": "PUB-03",
+  "name": "Public send alert",
+  "group": "Vehicles, QR, contacts and public scan",
+  "method": "POST",
+  "path": "/v1/public/scan/{qrUuid}/alert",
+  "url": "{{baseUrl}}/v1/public/scan/{qrUuid}/alert",
+  "auth": "None",
+  "webhook": false,
+  "calledBy": [
+    "Public scan web page"
+  ],
+  "purpose": "Send a preset message when a call is not wanted.",
+  "request": {
+    "headers": {
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "qrUuid": "uuid | required"
+    },
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "reason": "enum | required",
+      "note": "string | optional",
+      "callerPhone": "string | optional",
+      "captchaToken": "string"
+    },
+    "example": {
+      "url": "/v1/public/scan/35c6d9de-b2ec-4fb1-bc15-fe4abf153df5/alert",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "reason": "BLOCKING_ROAD",
+        "captchaToken": "ok"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 202,
+      "example": {
+        "data": {
+          "alertId": "6adb65ba8ee1a60d3a1394d3"
+        },
+        "requestId": "8c5728c6-f3be-49ed-bfd7-7987331ee7f6"
+      }
+    },
+    "errors": [
+      {
+        "code": "CAPTCHA_FAILED",
+        "status": 400,
+        "example": {
+          "error": {
+            "code": "CAPTCHA_FAILED",
+            "message": "Please complete the CAPTCHA"
+          },
+          "requestId": "a037cbf8-3f4d-4a16-891d-8659a9b7b216"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "RATE_LIMITED",
+        "status": 429,
+        "example": {
+          "error": {
+            "code": "RATE_LIMITED",
+            "message": "Too many requests. Please try again later."
+          },
+          "requestId": "11ac6b5b-0d66-47d4-bda8-de6470a860f9"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "QR_INACTIVE",
+        "status": 410,
+        "example": {
+          "error": {
+            "code": "QR_INACTIVE",
+            "message": "This label is no longer active"
+          },
+          "requestId": "3719022c-5581-4522-93f3-0a28af859bde"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/public/scan/35c6d9de-b2ec-4fb1-bc15-fe4abf153df5/alert\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"reason\":\"BLOCKING_ROAD\",\"captchaToken\":\"ok\"}'",
+  "testing": {
+    "testedBy": [
+      "errors.test.js",
+      "ratelimit.test.js",
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "400 CAPTCHA_FAILED",
+      "410 QR_INACTIVE",
+      "429 RATE_LIMITED",
+      "202 OK"
+    ],
+    "passed": true
+  }
+}

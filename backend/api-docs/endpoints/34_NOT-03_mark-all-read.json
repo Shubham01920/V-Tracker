@@ -1,0 +1,54 @@
+{
+  "id": "NOT-03",
+  "name": "Mark all read",
+  "group": "Calls, notifications and devices",
+  "method": "POST",
+  "path": "/v1/notifications/read-all",
+  "url": "{{baseUrl}}/v1/notifications/read-all",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Notifications"
+  ],
+  "purpose": "Clear the unread badge.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {},
+    "example": {
+      "url": "/v1/notifications/read-all",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 204,
+      "example": null
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/notifications/read-all\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "notification.test.js"
+    ],
+    "statusesSeenInTests": [
+      "204 OK"
+    ],
+    "passed": true
+  }
+}

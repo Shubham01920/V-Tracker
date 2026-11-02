@@ -1,0 +1,183 @@
+{
+  "id": "CHK-03",
+  "name": "Create order",
+  "group": "Checkout and payments",
+  "method": "POST",
+  "path": "/v1/orders",
+  "url": "{{baseUrl}}/v1/orders",
+  "auth": "Bearer + Idempotency-Key",
+  "webhook": false,
+  "calledBy": [
+    "Checkout"
+  ],
+  "purpose": "Create the order with locked prices, reserve stock and return a payment-gateway session.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "Idempotency-Key": "<new UUID per new request; reuse it only to retry the same request>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "addressId": "string | required",
+      "couponCode": "string | optional",
+      "redeemPoints": "boolean | optional",
+      "expectedTotalPaise": "integer | required | must equal CHK-01 totalPaise"
+    },
+    "example": {
+      "url": "/v1/orders",
+      "headers": {
+        "idempotency-key": "0154dde7-887c-4222-83b0-793fdd13e56f",
+        "content-type": "application/json"
+      },
+      "body": {
+        "addressId": "6adb65978277ffe58184146e",
+        "expectedTotalPaise": 123882,
+        "redeemPoints": false
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 201,
+      "example": {
+        "data": {
+          "orderId": "6adb65978277ffe581841470",
+          "orderNumber": "ORD-892301",
+          "status": "PENDING_PAYMENT",
+          "totalPaise": 123882,
+          "currency": "INR",
+          "payment": {
+            "gateway": "mock",
+            "keyId": "rzp_test_mock",
+            "gatewayOrderId": "order_sHdXchFMzpnVog",
+            "amountPaise": 123882,
+            "currency": "INR",
+            "expiresAt": "2026-10-23T14:18:07.968Z"
+          }
+        },
+        "requestId": "521ed715-767b-4faf-8af9-cfdda37d21bf"
+      }
+    },
+    "errors": [
+      {
+        "code": "PRICE_CHANGED",
+        "status": 409,
+        "example": {
+          "error": {
+            "code": "PRICE_CHANGED",
+            "message": "Prices changed since you opened checkout. Please review the new total.",
+            "details": [
+              {
+                "field": "expectedTotalPaise",
+                "issue": "mismatch",
+                "totalPaise": 241764
+              }
+            ]
+          },
+          "requestId": "761e3da2-4f8a-4f2e-abb4-fd6a1be5d85d"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "CART_EMPTY",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "CART_EMPTY",
+            "message": "Your cart is empty"
+          },
+          "requestId": "79751457-aedb-477e-b66b-488b052f0304"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "OUT_OF_STOCK",
+        "status": 409,
+        "example": {
+          "error": {
+            "code": "OUT_OF_STOCK",
+            "message": "4 Wheeler QR Label is out of stock",
+            "details": [
+              {
+                "field": "productId",
+                "issue": "stock",
+                "productId": "6adb659dcf39e842d2178453"
+              }
+            ]
+          },
+          "requestId": "68460792-aad5-4276-8031-be6c16e17347"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "Address not found"
+          },
+          "requestId": "7a4e5f79-e039-4738-9166-3186a9e913e3"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "IDEMPOTENCY_KEY_REQUIRED",
+        "status": 400,
+        "example": {
+          "error": {
+            "code": "IDEMPOTENCY_KEY_REQUIRED",
+            "message": "Idempotency-Key header is required for this request"
+          },
+          "requestId": "fa4239df-ca0a-4ab1-a3da-54618a2f56c4"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "IDEMPOTENCY_KEY_REUSED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "IDEMPOTENCY_KEY_REUSED",
+            "message": "Idempotency-Key was already used for a different request"
+          },
+          "requestId": "dd61efed-832c-4747-8d68-07a22d570e04"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/orders\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Idempotency-Key: $(uuidgen)\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"addressId\":\"6adb65978277ffe58184146e\",\"expectedTotalPaise\":123882,\"redeemPoints\":false}'",
+  "testing": {
+    "testedBy": [
+      "content.test.js",
+      "errors.test.js",
+      "notification.test.js",
+      "ratelimit.test.js",
+      "referral.test.js",
+      "shop.test.js",
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "201 OK",
+      "404 NOT_FOUND",
+      "409 OUT_OF_STOCK",
+      "400 IDEMPOTENCY_KEY_REQUIRED",
+      "422 CART_EMPTY",
+      "409 PRICE_CHANGED",
+      "422 IDEMPOTENCY_KEY_REUSED"
+    ],
+    "passed": true
+  }
+}

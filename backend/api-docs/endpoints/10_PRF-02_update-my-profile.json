@@ -1,0 +1,161 @@
+{
+  "id": "PRF-02",
+  "name": "Update my profile",
+  "group": "Profile",
+  "method": "PATCH",
+  "path": "/v1/me",
+  "url": "{{baseUrl}}/v1/me",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Edit Profile"
+  ],
+  "purpose": "Save changed fields only. A new mobile or alert number is applied after OTP (response.verification).",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "fullName": "string",
+      "email": "string",
+      "phone": "string | triggers OTP",
+      "alertPhone": "string | triggers OTP",
+      "address": "string",
+      "place": "string",
+      "city": "string",
+      "state": "string",
+      "pincode": "string",
+      "locality": "string",
+      "nearBy": "string"
+    },
+    "example": {
+      "url": "/v1/me",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "fullName": "Ok Name"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "id": "6adb65aecb2eaa851de03a2b",
+          "memberId": "VT100001",
+          "fullName": "Ok Name",
+          "email": "user.mvl0zj68427377@example.com",
+          "emailMasked": "us*****************@example.com",
+          "emailVerified": false,
+          "phoneMasked": "91******96",
+          "phoneLast4": "5296",
+          "phoneVerified": true,
+          "alertPhoneMasked": "91******96",
+          "alertPhoneVerified": true,
+          "pendingPhoneVerification": false,
+          "pendingAlertPhoneVerification": false,
+          "avatarUrl": null,
+          "address": null,
+          "place": null,
+          "city": null,
+          "state": null,
+          "pincode": null,
+          "locality": null,
+          "nearBy": null,
+          "referralCode": "VTY678B3",
+          "kycStatus": "NOT_SUBMITTED",
+          "pointsBalance": 0,
+          "role": "OWNER",
+          "createdAt": "2026-10-23T13:48:30.074Z"
+        },
+        "requestId": "ece079c7-227b-4aa6-8eae-1f92ff7e80ca"
+      }
+    },
+    "errors": [
+      {
+        "code": "VALIDATION_FAILED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "VALIDATION_FAILED",
+            "message": "Please check the highlighted fields.",
+            "details": [
+              {
+                "field": "body",
+                "issue": "object.min",
+                "message": "Send at least one field to update"
+              }
+            ]
+          },
+          "requestId": "7d78a389-d4de-4e39-a068-8b27bf9149f0"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "PHONE_TAKEN",
+        "status": 409,
+        "example": {
+          "error": {
+            "code": "PHONE_TAKEN",
+            "message": "This phone number is already registered",
+            "details": [
+              {
+                "field": "phone",
+                "issue": "taken"
+              }
+            ]
+          },
+          "requestId": "d2ef58a7-1f86-4143-91f6-76ec380d6608"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "EMAIL_TAKEN",
+        "status": 409,
+        "example": {
+          "error": {
+            "code": "EMAIL_TAKEN",
+            "message": "This e-mail is already registered",
+            "details": [
+              {
+                "field": "email",
+                "issue": "taken"
+              }
+            ]
+          },
+          "requestId": "917d3bac-e566-4ff5-8600-9cda57540bab"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X PATCH \"http://localhost:5000/v1/me\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"fullName\":\"Ok Name\"}'",
+  "testing": {
+    "testedBy": [
+      "errors.test.js",
+      "security.test.js",
+      "user.test.js"
+    ],
+    "statusesSeenInTests": [
+      "409 EMAIL_TAKEN",
+      "200 OK",
+      "409 PHONE_TAKEN",
+      "422 VALIDATION_FAILED"
+    ],
+    "passed": true
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "id": "REF-03",
+  "name": "Performance",
+  "group": "Rewards, referral and payouts",
+  "method": "GET",
+  "path": "/v1/referral/performance",
+  "url": "{{baseUrl}}/v1/referral/performance",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Your Performance"
+  ],
+  "purpose": "Every block of the Your Performance page from one ledger so numbers agree.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/referral/performance",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "profile": {
+            "name": "Basavarajappa K",
+            "memberId": "VT100003",
+            "referralCode": "VTBK9KDK",
+            "emailMasked": "us*****************@example.com",
+            "avatarUrl": null
+          },
+          "overview": {
+            "directReferrals": 2,
+            "totalTeam": 3,
+            "activeTeam": 2,
+            "totalPayouts": 2
+          },
+          "earnings": {
+            "personalEarningsPaise": 6000,
+            "availableBalancePaise": 5000,
+            "heldBalancePaise": 0,
+            "totalTeamsEarningsPaise": 6000,
+            "creditedPaise": 5000,
+            "pendingPaise": 1000,
+            "rewardCashbackPaise": 0
+          },
+          "teamEarnings": [
+            {
+              "level": 1,
+              "team": "Team 1",
+              "amountPaise": 5000,
+              "count": 1
+            },
+            {
+              "level": 2,
+              "team": "Team 2",
+              "amountPaise": 1000,
+              "count": 1
+            },
+            {
+              "level": 3,
+              "team": "Team 3",
+              "amountPaise": 0,
+              "count": 0
+            }
+          ],
+          "activityRate": {
+            "activeMembers": 2,
+            "totalMembers": 3,
+            "activePercent": 67
+          },
+          "requirements": [
+            {
+              "level": 1,
+              "team": "Team 1",
+              "requiredDirectReferrals": 0,
+              "currentDirectReferrals": 2,
+              "met": true,
+              "bonusPaise": 5000
+            },
+            {
+              "level": 2,
+              "team": "Team 2",
+              "requiredDirectReferrals": 2,
+              "currentDirectReferrals": 2,
+              "met": true,
+              "bonusPaise": 1000
+            },
+            {
+              "level": 3,
+              "team": "Team 3",
+              "requiredDirectReferrals": 3,
+              "currentDirectReferrals": 2,
+              "met": false,
+              "bonusPaise": 1000
+            }
+          ],
+          "payoutStatus": {
+            "creditedPaise": 5000,
+            "creditedCount": 1,
+            "pendingPaise": 1000,
+            "pendingCount": 1,
+            "reversedPaise": 0,
+            "reversedCount": 0
+          },
+          "programEnabled": true
+        },
+        "requestId": "420500eb-3038-4980-9caa-551685c7b304"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/referral/performance\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "referral.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

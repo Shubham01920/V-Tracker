@@ -1,0 +1,94 @@
+{
+  "id": "REF-02",
+  "name": "Direct referrals",
+  "group": "Rewards, referral and payouts",
+  "method": "GET",
+  "path": "/v1/referral/direct",
+  "url": "{{baseUrl}}/v1/referral/direct",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Direct Referral"
+  ],
+  "purpose": "People invited directly with masked e-mail, team size and status.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {
+      "q": "string | optional",
+      "page": "integer | optional | default 1",
+      "limit": "integer | optional | default 20, max 100"
+    },
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/referral/direct",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "items": [
+            {
+              "sn": 1,
+              "name": "Ganesha K",
+              "emailMasked": "us*****************@example.com",
+              "userId": "VT100005",
+              "joinedAt": "2026-10-23T13:48:26.877Z",
+              "totalTeam": 0,
+              "activeTeam": 0,
+              "status": "INACTIVE"
+            },
+            {
+              "sn": 2,
+              "name": "Khaja Vali M",
+              "emailMasked": "us*****************@example.com",
+              "userId": "VT100004",
+              "joinedAt": "2026-10-23T13:48:26.813Z",
+              "totalTeam": 1,
+              "activeTeam": 0,
+              "status": "INACTIVE"
+            }
+          ],
+          "stats": {
+            "total": 2,
+            "active": 0,
+            "activePercent": 0
+          }
+        },
+        "meta": {
+          "page": 1,
+          "limit": 20,
+          "total": 2,
+          "hasMore": false
+        },
+        "requestId": "c35dfad6-9f7d-43ad-b24c-f1b6431ccf94"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/referral/direct\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "referral.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

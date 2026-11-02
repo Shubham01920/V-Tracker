@@ -1,0 +1,75 @@
+{
+  "id": "PAY-02",
+  "name": "Payout summary",
+  "group": "Rewards, referral and payouts",
+  "method": "GET",
+  "path": "/v1/payouts/summary",
+  "url": "{{baseUrl}}/v1/payouts/summary",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Payout History"
+  ],
+  "purpose": "Totals and per-team counts (same ledger as PAY-03).",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/payouts/summary",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "totalEarnedPaise": 6000,
+          "totalPayouts": 2,
+          "creditedPaise": 0,
+          "creditedCount": 0,
+          "pendingPaise": 6000,
+          "pendingCount": 2,
+          "teams": [
+            {
+              "level": 1,
+              "team": "Team 1",
+              "count": 1
+            },
+            {
+              "level": 2,
+              "team": "Team 2",
+              "count": 1
+            }
+          ]
+        },
+        "requestId": "d324f594-ece9-4986-a72c-d789c9b9a318"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/payouts/summary\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "referral.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

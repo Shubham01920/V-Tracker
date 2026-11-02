@@ -1,0 +1,75 @@
+{
+  "id": "DOC-04",
+  "name": "Export verified documents",
+  "group": "Documents",
+  "method": "POST",
+  "path": "/v1/documents/export",
+  "url": "{{baseUrl}}/v1/documents/export",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Verified Documents"
+  ],
+  "purpose": "Async ZIP of all verified files; a notification carries the link when ready.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {},
+    "example": {
+      "url": "/v1/documents/export",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 202,
+      "example": {
+        "data": {
+          "jobId": "6adb659bbe27f7c9498867ec",
+          "status": "QUEUED",
+          "documentCount": 1
+        },
+        "requestId": "1d9367ce-789a-4328-8114-5c6b18576f39"
+      }
+    },
+    "errors": [
+      {
+        "code": "NO_VERIFIED_DOCUMENTS",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "NO_VERIFIED_DOCUMENTS",
+            "message": "You have no verified documents to download yet"
+          },
+          "requestId": "a4a50f27-ed8a-490f-aea2-a0cbe827fe93"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/documents/export\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "document.test.js"
+    ],
+    "statusesSeenInTests": [
+      "422 NO_VERIFIED_DOCUMENTS",
+      "202 OK"
+    ],
+    "passed": true
+  }
+}

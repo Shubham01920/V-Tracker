@@ -21,6 +21,7 @@ class _SignupTabContentState extends State<SignupTabContent> {
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _referralCodeController = TextEditingController();
   bool _obscurePassword = true;
 
   @override
@@ -29,6 +30,7 @@ class _SignupTabContentState extends State<SignupTabContent> {
     _emailController.dispose();
     _phoneController.dispose();
     _passwordController.dispose();
+    _referralCodeController.dispose();
     super.dispose();
   }
 
@@ -104,6 +106,13 @@ class _SignupTabContentState extends State<SignupTabContent> {
                   });
                 },
               ),
+            ),
+            const SizedBox(height: 10),
+
+            VTTextField(
+              controller: _referralCodeController,
+              hintText: 'Referral Code (Optional)',
+              prefixIcon: const Icon(Icons.card_giftcard_outlined),
             ),
             const SizedBox(height: 16),
 

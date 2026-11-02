@@ -1,0 +1,114 @@
+{
+  "id": "FST-06",
+  "name": "FASTag webhook",
+  "group": "FASTag",
+  "method": "POST",
+  "path": "/v1/webhooks/fastag",
+  "url": "{{baseUrl}}/v1/webhooks/fastag",
+  "auth": "HMAC",
+  "webhook": true,
+  "calledBy": [
+    "(provider)"
+  ],
+  "purpose": "Aggregator confirms credit (recharge.credited) or failure.",
+  "request": {
+    "headers": {
+      "Content-Type": "application/json",
+      "X-Timestamp": "<unix seconds>",
+      "X-Signature": "<hex HMAC-SHA256 of \"<X-Timestamp>.<raw body>\" with WEBHOOK_SECRET_<PROVIDER>>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "eventId": "string | required",
+      "event": "recharge.credited|recharge.failed",
+      "providerRef": "string | required",
+      "reason": "string"
+    },
+    "example": {
+      "url": "/v1/webhooks/fastag",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "eventId": "evt_f093bace-85fc-4f1e-a084-d010931d19d5",
+        "event": "recharge.credited",
+        "providerRef": "ftr_1O46WMvYqtHOdg"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "received": true,
+          "duplicate": false,
+          "rechargeId": "6adb65a1f2e34c1ceef57704",
+          "status": "CREDITED"
+        },
+        "requestId": "6b7dfb7f-ee8d-40f6-bb67-9ad0858a58eb"
+      }
+    },
+    "errors": [
+      {
+        "code": "SIGNATURE_INVALID",
+        "status": 401,
+        "example": {
+          "error": {
+            "code": "SIGNATURE_INVALID",
+            "message": "Missing signature, timestamp or body"
+          },
+          "requestId": "9c67a900-9841-40ee-a72e-926f9d4edeac"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "VALIDATION_FAILED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "VALIDATION_FAILED",
+            "message": "Please check the highlighted fields.",
+            "details": [
+              {
+                "field": "event",
+                "issue": "any.only",
+                "message": "event must be one of [recharge.credited, recharge.failed]"
+              },
+              {
+                "field": "providerRef",
+                "issue": "any.required",
+                "message": "providerRef is required"
+              }
+            ]
+          },
+          "requestId": "678bbe92-8472-4803-8cdc-ddca51bd5b78"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/webhooks/fastag\" \\\n  -H \"X-Timestamp: $TS\" -H \"X-Signature: $SIG\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"eventId\":\"evt_f093bace-85fc-4f1e-a084-d010931d19d5\",\"event\":\"recharge.credited\",\"providerRef\":\"ftr_1O46WMvYqtHOdg\"}'",
+  "testing": {
+    "testedBy": [
+      "fastag.test.js",
+      "security.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "401 SIGNATURE_INVALID",
+      "422 VALIDATION_FAILED"
+    ],
+    "passed": true
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "id": "FST-02",
+  "name": "FASTag balance",
+  "group": "FASTag",
+  "method": "GET",
+  "path": "/v1/fastag/lookup",
+  "url": "{{baseUrl}}/v1/fastag/lookup",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "FASTag Balance"
+  ],
+  "purpose": "Issuer, tag id, status and balance. Only for the owner's own vehicles.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {
+      "vehicle": "string | required | registration number"
+    },
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/fastag/lookup?vehicle=KA17SP7360",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "vehicle": "KA17SP7360",
+          "vehicleId": "6adb65a1f2e34c1ceef576ef",
+          "issuer": "HDFC Bank FASTag",
+          "issuerCode": "HDFC",
+          "tagId": "34161FA8203000858526299",
+          "status": "ACTIVE",
+          "balancePaise": 69000,
+          "currency": "INR"
+        },
+        "requestId": "da73334f-1435-4989-a21d-2ee0467e78e7"
+      }
+    },
+    "errors": [
+      {
+        "code": "FASTAG_NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "FASTAG_NOT_FOUND",
+            "message": "No FASTag is linked to this vehicle"
+          },
+          "requestId": "f83f1e6b-e8f7-44dc-ba47-537e77bb3d03"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "VEHICLE_NOT_OWNED",
+        "status": 403,
+        "example": {
+          "error": {
+            "code": "VEHICLE_NOT_OWNED",
+            "message": "Add this vehicle to My Vehicles to check its FASTag"
+          },
+          "requestId": "0843c05a-6396-4f17-bc83-600dc28f9010"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "PROVIDER_UNAVAILABLE",
+        "status": 503,
+        "example": {
+          "error": {
+            "code": "PROVIDER_UNAVAILABLE",
+            "message": "FASTag service is temporarily unavailable"
+          },
+          "requestId": "23f3e729-debf-45cd-bde1-7940afafdb79"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/fastag/lookup?vehicle=KA17SP7360\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "errors.test.js",
+      "fastag.test.js"
+    ],
+    "statusesSeenInTests": [
+      "503 PROVIDER_UNAVAILABLE",
+      "200 OK",
+      "404 FASTAG_NOT_FOUND",
+      "403 VEHICLE_NOT_OWNED"
+    ],
+    "passed": true
+  }
+}

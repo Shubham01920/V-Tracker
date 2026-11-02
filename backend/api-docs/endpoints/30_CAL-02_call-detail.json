@@ -1,0 +1,90 @@
+{
+  "id": "CAL-02",
+  "name": "Call detail",
+  "group": "Calls, notifications and devices",
+  "method": "GET",
+  "path": "/v1/calls/{id}",
+  "url": "{{baseUrl}}/v1/calls/{id}",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Call History"
+  ],
+  "purpose": "One contact with duration, reason and block option.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "id": "string | required"
+    },
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/calls/6adb65b98ee1a60d3a1394a3",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "id": "6adb65b98ee1a60d3a1394a3",
+          "kind": "CALL",
+          "outcome": "MISSED",
+          "reason": "EMERGENCY",
+          "reasonLabel": "Emergency - need help",
+          "note": null,
+          "channel": "APP",
+          "durationSec": 0,
+          "at": "2026-10-23T13:48:41.503Z",
+          "vehicle": {
+            "id": "6adb65b98ee1a60d3a139499",
+            "registrationNumber": "KA17SP5613",
+            "type": "FOUR_WHEELER",
+            "model": "Hyundai Creta"
+          },
+          "isBlocked": false,
+          "canBlock": true
+        },
+        "requestId": "6167140b-8c38-4c35-906b-c7483c033a56"
+      }
+    },
+    "errors": [
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "Call not found"
+          },
+          "requestId": "7fb12970-456b-4173-a062-efb3d703933f"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/calls/6adb65b98ee1a60d3a1394a3\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "404 NOT_FOUND"
+    ],
+    "passed": true
+  }
+}

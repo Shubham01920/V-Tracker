@@ -1,0 +1,89 @@
+{
+  "id": "KYC-01",
+  "name": "Submit PAN",
+  "group": "Bank, KYC and wallet",
+  "method": "POST",
+  "path": "/v1/me/kyc",
+  "url": "{{baseUrl}}/v1/me/kyc",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "PAN KYC"
+  ],
+  "purpose": "Submit PAN. Withdrawals stay blocked until VERIFIED.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "panNumber": "string | required | ABCDE1234F",
+      "nameOnPan": "string | required"
+    },
+    "example": {
+      "url": "/v1/me/kyc",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "panNumber": "ABCDE1234F",
+        "nameOnPan": "Test Owner"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 202,
+      "example": {
+        "data": {
+          "status": "VERIFIED",
+          "panLast4": "234F",
+          "nameOnPan": "Test Owner"
+        },
+        "requestId": "fdb2c645-1d0f-4d0f-a236-4384ed47b52f"
+      }
+    },
+    "errors": [
+      {
+        "code": "PAN_INVALID",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "PAN_INVALID",
+            "message": "Enter a valid PAN, e.g. ABCDE1234F",
+            "details": [
+              {
+                "field": "panNumber",
+                "issue": "format"
+              }
+            ]
+          },
+          "requestId": "42bfefc3-c3a9-48f9-94a3-836872495621"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/me/kyc\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"panNumber\":\"ABCDE1234F\",\"nameOnPan\":\"Test Owner\"}'",
+  "testing": {
+    "testedBy": [
+      "wallet.test.js"
+    ],
+    "statusesSeenInTests": [
+      "422 PAN_INVALID",
+      "202 OK"
+    ],
+    "passed": true
+  }
+}

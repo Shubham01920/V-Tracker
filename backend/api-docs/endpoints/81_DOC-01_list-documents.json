@@ -1,0 +1,89 @@
+{
+  "id": "DOC-01",
+  "name": "List documents",
+  "group": "Documents",
+  "method": "GET",
+  "path": "/v1/documents",
+  "url": "{{baseUrl}}/v1/documents",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Verified Documents"
+  ],
+  "purpose": "Type, masked number, status and expiry.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {
+      "type": "VEHICLE_RC|FASTAG_CERTIFICATE|MOTOR_INSURANCE|PUC|DRIVING_LICENCE | optional"
+    },
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/documents",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "items": [
+            {
+              "id": "6adb659abe27f7c9498867e3",
+              "type": "PUC",
+              "typeLabel": "PUC Certificate",
+              "numberMasked": "*****8877",
+              "status": "PENDING_VERIFICATION",
+              "expiryDate": null,
+              "file": {
+                "mime": "image/png",
+                "size": 66
+              },
+              "rejectionReason": null,
+              "createdAt": "2026-10-23T13:48:10.872Z"
+            },
+            {
+              "id": "6adb659abe27f7c9498867e2",
+              "type": "VEHICLE_RC",
+              "typeLabel": "Vehicle Registration (RC)",
+              "numberMasked": "********0001",
+              "status": "PENDING_VERIFICATION",
+              "expiryDate": "2037-05-31T00:00:00.000Z",
+              "file": {
+                "mime": "application/pdf",
+                "size": 125
+              },
+              "rejectionReason": null,
+              "createdAt": "2026-10-23T13:48:10.857Z"
+            }
+          ]
+        },
+        "requestId": "bfb83b10-53b3-4d77-9c4a-5654ae2c2e4b"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/documents\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "document.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

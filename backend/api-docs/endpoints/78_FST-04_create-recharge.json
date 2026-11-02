@@ -1,0 +1,171 @@
+{
+  "id": "FST-04",
+  "name": "Create recharge",
+  "group": "FASTag",
+  "method": "POST",
+  "path": "/v1/fastag/recharge",
+  "url": "{{baseUrl}}/v1/fastag/recharge",
+  "auth": "Bearer + Idempotency-Key",
+  "webhook": false,
+  "calledBy": [
+    "FASTag Recharge"
+  ],
+  "purpose": "Create a recharge and a UPI payment session.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "Idempotency-Key": "<new UUID per new request; reuse it only to retry the same request>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "vehicle": "string | required",
+      "issuerCode": "string | required | from FST-01",
+      "amountPaise": "integer | required | min 10000",
+      "upiHandle": "string | optional"
+    },
+    "example": {
+      "url": "/v1/fastag/recharge",
+      "headers": {
+        "idempotency-key": "396c5a8d-c2bf-41f2-b345-699ee4780819",
+        "content-type": "application/json"
+      },
+      "body": {
+        "vehicle": "ka17sp5300",
+        "issuerCode": "KOTAK",
+        "amountPaise": 50000,
+        "upiHandle": "owner@okicici"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 201,
+      "example": {
+        "data": {
+          "id": "6adb65a1f2e34c1ceef57704",
+          "status": "PENDING_PAYMENT",
+          "amountPaise": 50000,
+          "payment": {
+            "gateway": "mock",
+            "keyId": "rzp_test_mock",
+            "gatewayOrderId": "order_98iJ4IU9etfYlA",
+            "amountPaise": 50000,
+            "currency": "INR",
+            "method": "UPI",
+            "upiHandle": "owner@okicici",
+            "expiresAt": "2026-10-23T14:18:17.365Z"
+          }
+        },
+        "requestId": "534c9bec-0f9d-4511-a219-cbbfbdf2a7a7"
+      }
+    },
+    "errors": [
+      {
+        "code": "BELOW_MINIMUM",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "BELOW_MINIMUM",
+            "message": "Minimum recharge is ₹100",
+            "details": [
+              {
+                "field": "amountPaise",
+                "issue": "min"
+              }
+            ]
+          },
+          "requestId": "33ec3664-6ec5-4c71-a1df-4d648fdfa1f3"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "ABOVE_MAXIMUM",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "ABOVE_MAXIMUM",
+            "message": "Maximum recharge is ₹10,000",
+            "details": [
+              {
+                "field": "amountPaise",
+                "issue": "max"
+              }
+            ]
+          },
+          "requestId": "ea4e47b4-6a8d-45f9-9cc4-6d3d9ea0b898"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "VEHICLE_NOT_OWNED",
+        "status": 403,
+        "example": {
+          "error": {
+            "code": "VEHICLE_NOT_OWNED",
+            "message": "Add this vehicle to My Vehicles to check its FASTag"
+          },
+          "requestId": "8a599b14-5d0e-4b93-b9a9-264288329346"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "FASTAG_NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "FASTAG_NOT_FOUND",
+            "message": "No FASTag is linked to this vehicle"
+          },
+          "requestId": "d4995ba9-9973-49eb-8bd7-363853041024"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "VALIDATION_FAILED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "VALIDATION_FAILED",
+            "message": "This FASTag is issued by Kotak Mahindra Bank. Choose that bank.",
+            "details": [
+              {
+                "field": "issuerCode",
+                "issue": "issuer_mismatch",
+                "expected": "KOTAK"
+              }
+            ]
+          },
+          "requestId": "338ec041-0ed9-4ee1-80b2-5c5c72ca9bb1"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/fastag/recharge\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Idempotency-Key: $(uuidgen)\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"vehicle\":\"ka17sp5300\",\"issuerCode\":\"KOTAK\",\"amountPaise\":50000,\"upiHandle\":\"owner@okicici\"}'",
+  "testing": {
+    "testedBy": [
+      "errors.test.js",
+      "fastag.test.js"
+    ],
+    "statusesSeenInTests": [
+      "403 VEHICLE_NOT_OWNED",
+      "404 FASTAG_NOT_FOUND",
+      "422 VALIDATION_FAILED",
+      "422 BELOW_MINIMUM",
+      "422 ABOVE_MAXIMUM",
+      "201 OK"
+    ],
+    "passed": true
+  }
+}

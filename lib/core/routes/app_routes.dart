@@ -28,5 +28,17 @@ class AppRoutes {
   static const String editProfile = '/editProfile';
   static const String trackOrder = '/trackOrder';
   static const String cart = '/cart';
+  static const String bankDetails = '/bankDetails';
+  static const String withdraw = '/withdraw';
+  static const String withdrawHistory = '/withdrawHistory';
+  static const String directReferral = '/directReferral';
+  static const String yourPerformance = '/yourPerformance';
+  static const String teamPerformance = '/teamPerformance';
+  static const String payoutHistory = '/payoutHistory';
+  static const String payoutsByTeams = '/payoutsByTeams';
+  static const String fasttagCheck = '/fasttagCheck';
+  static const String fasttagRecharge = '/fasttagRecharge';
+  static const String verifiedDocuments = '/verifiedDocuments';
+  static const String more = '/more';
 }
 

@@ -1,0 +1,70 @@
+{
+  "id": "REF-04",
+  "name": "Team summary",
+  "group": "Rewards, referral and payouts",
+  "method": "GET",
+  "path": "/v1/referral/team/summary",
+  "url": "{{baseUrl}}/v1/referral/team/summary",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Team Performance"
+  ],
+  "purpose": "Total members, active members, active rate and members per level.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/referral/team/summary",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "totalMembers": 3,
+          "activeMembers": 2,
+          "activeRatePercent": 67,
+          "byLevel": [
+            {
+              "level": 1,
+              "members": 2
+            },
+            {
+              "level": 2,
+              "members": 1
+            }
+          ]
+        },
+        "requestId": "7562d0ab-7a3c-48f0-81c6-94edd5976852"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/referral/team/summary\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "referral.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

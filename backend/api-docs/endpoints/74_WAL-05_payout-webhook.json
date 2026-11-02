@@ -1,0 +1,116 @@
+{
+  "id": "WAL-05",
+  "name": "Payout webhook",
+  "group": "Bank, KYC and wallet",
+  "method": "POST",
+  "path": "/v1/webhooks/payout",
+  "url": "{{baseUrl}}/v1/webhooks/payout",
+  "auth": "HMAC",
+  "webhook": true,
+  "calledBy": [
+    "(provider)"
+  ],
+  "purpose": "payout.processed settles the hold; payout.failed / payout.reversed release it back to available.",
+  "request": {
+    "headers": {
+      "Content-Type": "application/json",
+      "X-Timestamp": "<unix seconds>",
+      "X-Signature": "<hex HMAC-SHA256 of \"<X-Timestamp>.<raw body>\" with WEBHOOK_SECRET_<PROVIDER>>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "eventId": "string | required",
+      "event": "payout.processed|payout.failed|payout.reversed",
+      "providerRef": "string | required",
+      "utr": "string",
+      "reason": "string"
+    },
+    "example": {
+      "url": "/v1/webhooks/payout",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "eventId": "evt_67a9d9c2-1d54-4d47-980d-d1ddc374d4c3",
+        "event": "payout.processed",
+        "providerRef": "pout_d6i0P1diXxdszg",
+        "utr": "HDFCN52026102399"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "received": true,
+          "duplicate": false,
+          "withdrawalId": "6adb65bd71f497c38a204147",
+          "status": "COMPLETED"
+        },
+        "requestId": "14f65250-7b41-4d8c-b6d7-3ca9f00ac473"
+      }
+    },
+    "errors": [
+      {
+        "code": "SIGNATURE_INVALID",
+        "status": 401,
+        "example": {
+          "error": {
+            "code": "SIGNATURE_INVALID",
+            "message": "Missing signature, timestamp or body"
+          },
+          "requestId": "a48b2ccd-fe36-4063-afd3-bdf057c444e5"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "VALIDATION_FAILED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "VALIDATION_FAILED",
+            "message": "Please check the highlighted fields.",
+            "details": [
+              {
+                "field": "event",
+                "issue": "any.only",
+                "message": "event must be one of [payout.processed, payout.failed, payout.reversed]"
+              },
+              {
+                "field": "providerRef",
+                "issue": "any.required",
+                "message": "providerRef is required"
+              }
+            ]
+          },
+          "requestId": "4c5d7449-996d-46d8-899b-21ffd41b4221"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/webhooks/payout\" \\\n  -H \"X-Timestamp: $TS\" -H \"X-Signature: $SIG\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"eventId\":\"evt_67a9d9c2-1d54-4d47-980d-d1ddc374d4c3\",\"event\":\"payout.processed\",\"providerRef\":\"pout_d6i0P1diXxdszg\",\"utr\":\"HDFCN52026102399\"}'",
+  "testing": {
+    "testedBy": [
+      "security.test.js",
+      "wallet.test.js"
+    ],
+    "statusesSeenInTests": [
+      "401 SIGNATURE_INVALID",
+      "422 VALIDATION_FAILED",
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

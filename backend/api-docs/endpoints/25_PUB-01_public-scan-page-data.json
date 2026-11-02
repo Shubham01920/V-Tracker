@@ -1,0 +1,122 @@
+{
+  "id": "PUB-01",
+  "name": "Public scan page data",
+  "group": "Vehicles, QR, contacts and public scan",
+  "method": "GET",
+  "path": "/v1/public/scan/{qrUuid}",
+  "url": "{{baseUrl}}/v1/public/scan/{qrUuid}",
+  "auth": "None",
+  "webhook": false,
+  "calledBy": [
+    "Public scan web page"
+  ],
+  "purpose": "Masked plate, vehicle type and allowed actions for the bystander web page. Never owner data.",
+  "request": {
+    "headers": {
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "qrUuid": "uuid | required"
+    },
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/public/scan/9a5f94b3-b01c-477d-8f88-6755590e36bb",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "maskedPlate": "KA 17 ** 9770",
+          "vehicleType": "FOUR_WHEELER",
+          "active": true,
+          "actions": [
+            "CALL",
+            "ALERT",
+            "REPORT"
+          ],
+          "reasons": [
+            {
+              "code": "BLOCKING_ROAD",
+              "label": "Vehicle is blocking the road"
+            },
+            {
+              "code": "LIGHTS_ON",
+              "label": "Lights are left on"
+            },
+            {
+              "code": "DOORS_OPEN",
+              "label": "Doors or windows are open"
+            }
+          ],
+          "message": "This vehicle is protected by V Tracker. Your number stays private."
+        },
+        "requestId": "eacc8f11-75f2-4caa-b99b-0920eab4b1c4"
+      }
+    },
+    "errors": [
+      {
+        "code": "QR_NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "QR_NOT_FOUND",
+            "message": "This is not a V Tracker label"
+          },
+          "requestId": "cd2f5785-54c6-42fe-8844-8986ecbedb23"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "QR_INACTIVE",
+        "status": 410,
+        "example": {
+          "error": {
+            "code": "QR_INACTIVE",
+            "message": "This label is no longer active"
+          },
+          "requestId": "456b82ec-d95e-496c-bea2-cc76a4f82716"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "RATE_LIMITED",
+        "status": 429,
+        "example": {
+          "error": {
+            "code": "RATE_LIMITED",
+            "message": "Too many requests. Please try again later."
+          },
+          "requestId": "1d78dabe-e615-41ae-a265-d34b79903ff3"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/public/scan/9a5f94b3-b01c-477d-8f88-6755590e36bb\"",
+  "testing": {
+    "testedBy": [
+      "errors.test.js",
+      "ratelimit.test.js",
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "410 QR_INACTIVE",
+      "404 QR_NOT_FOUND",
+      "429 RATE_LIMITED",
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

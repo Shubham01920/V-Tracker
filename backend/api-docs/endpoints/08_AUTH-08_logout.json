@@ -1,0 +1,75 @@
+{
+  "id": "AUTH-08",
+  "name": "Logout",
+  "group": "Authentication",
+  "method": "POST",
+  "path": "/v1/auth/logout",
+  "url": "{{baseUrl}}/v1/auth/logout",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Drawer",
+    "Profile"
+  ],
+  "purpose": "Revoke the refresh-token family on the server.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "refreshToken": "string | required"
+    },
+    "example": {
+      "url": "/v1/auth/logout",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "refreshToken": "cY-t091mcsJB..."
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 204,
+      "example": null
+    },
+    "errors": [
+      {
+        "code": "UNAUTHORIZED",
+        "status": 401,
+        "example": {
+          "error": {
+            "code": "UNAUTHORIZED",
+            "message": "Missing bearer token"
+          },
+          "requestId": "1ef84684-d891-4173-a7df-444e5f30cf2f"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/auth/logout\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"refreshToken\":\"cY-t091mcsJB...\"}'",
+  "testing": {
+    "testedBy": [
+      "auth.test.js"
+    ],
+    "statusesSeenInTests": [
+      "401 UNAUTHORIZED",
+      "204 OK"
+    ],
+    "passed": true
+  }
+}

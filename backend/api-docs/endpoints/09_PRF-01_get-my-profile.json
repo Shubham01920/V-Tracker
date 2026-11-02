@@ -1,0 +1,89 @@
+{
+  "id": "PRF-01",
+  "name": "Get my profile",
+  "group": "Profile",
+  "method": "GET",
+  "path": "/v1/me",
+  "url": "{{baseUrl}}/v1/me",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Drawer",
+    "Home",
+    "Profile",
+    "Edit Profile"
+  ],
+  "purpose": "Current user with masked phones, avatar, address fields, referral code and KYC state.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/me",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "id": "6adb6595c2a2a49ecda831ef",
+          "memberId": "VT100011",
+          "fullName": "Test Owner",
+          "email": "user.mvl0z068221634@example.com",
+          "emailMasked": "us*****************@example.com",
+          "emailVerified": false,
+          "phoneMasked": "91******53",
+          "phoneLast4": "9553",
+          "phoneVerified": true,
+          "alertPhoneMasked": "91******53",
+          "alertPhoneVerified": true,
+          "pendingPhoneVerification": false,
+          "pendingAlertPhoneVerification": false,
+          "avatarUrl": null,
+          "address": null,
+          "place": null,
+          "city": null,
+          "state": null,
+          "pincode": null,
+          "locality": null,
+          "nearBy": null,
+          "referralCode": "VTNU7JQD",
+          "kycStatus": "NOT_SUBMITTED",
+          "pointsBalance": 0,
+          "role": "OWNER",
+          "createdAt": "2026-10-23T13:48:05.421Z"
+        },
+        "requestId": "7f6a615e-13e6-4969-9573-cb9362c2bbaf"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/me\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "auth.test.js",
+      "shop.test.js",
+      "user.test.js",
+      "wallet.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

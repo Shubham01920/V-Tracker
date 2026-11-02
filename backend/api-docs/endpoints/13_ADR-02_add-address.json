@@ -1,0 +1,132 @@
+{
+  "id": "ADR-02",
+  "name": "Add address",
+  "group": "Addresses",
+  "method": "POST",
+  "path": "/v1/addresses",
+  "url": "{{baseUrl}}/v1/addresses",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Address Book"
+  ],
+  "purpose": "Save an address. The first one, or one sent with isDefault=true, becomes the default.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "name": "string | required",
+      "phone": "string | required | recipient mobile",
+      "label": "HOME|OFFICE|OTHER | optional",
+      "line1": "string | required",
+      "line2": "string | optional",
+      "pincode": "string | required | 6 digits",
+      "city": "string | required",
+      "state": "string | required",
+      "isDefault": "boolean | optional"
+    },
+    "example": {
+      "url": "/v1/addresses",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "name": "Test Owner",
+        "phone": "9876543210",
+        "label": "HOME",
+        "line1": "12, 4th Cross, Koramangala",
+        "line2": "Near Forum Mall",
+        "pincode": "560034",
+        "city": "Bengaluru",
+        "state": "Karnataka",
+        "isDefault": false
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 201,
+      "example": {
+        "data": {
+          "id": "6adb65978277ffe58184146e",
+          "name": "Test Owner",
+          "phone": "9876543210",
+          "label": "HOME",
+          "line1": "12, 4th Cross, Koramangala",
+          "line2": "Near Forum Mall",
+          "pincode": "560034",
+          "city": "Bengaluru",
+          "state": "Karnataka",
+          "isDefault": true,
+          "updatedAt": "2026-10-23T13:48:07.900Z"
+        },
+        "requestId": "08d44914-7aaf-4ebd-8b95-5a46d6243eb2"
+      }
+    },
+    "errors": [
+      {
+        "code": "VALIDATION_FAILED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "VALIDATION_FAILED",
+            "message": "Please check the highlighted fields.",
+            "details": [
+              {
+                "field": "phone",
+                "issue": "any.required",
+                "message": "phone is required"
+              }
+            ]
+          },
+          "requestId": "ccd42e57-ac82-43d1-bbc0-bac8d2ca6516"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "LIMIT_REACHED",
+        "status": 409,
+        "example": {
+          "error": {
+            "code": "LIMIT_REACHED",
+            "message": "You can save up to 10 addresses"
+          },
+          "requestId": "0ff563ac-464d-4559-abde-e9fd28224105"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/addresses\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"name\":\"Test Owner\",\"phone\":\"9876543210\",\"label\":\"HOME\",\"line1\":\"12, 4th Cross, Koramangala\",\"line2\":\"Near Forum Mall\",\"pincode\":\"560034\",\"city\":\"Bengaluru\",\"state\":\"Karnataka\",\"isDefault\":false}'",
+  "testing": {
+    "testedBy": [
+      "content.test.js",
+      "errors.test.js",
+      "notification.test.js",
+      "ratelimit.test.js",
+      "referral.test.js",
+      "shop.test.js",
+      "user.test.js",
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "201 OK",
+      "422 VALIDATION_FAILED",
+      "409 LIMIT_REACHED"
+    ],
+    "passed": true
+  }
+}

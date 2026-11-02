@@ -1,0 +1,70 @@
+{
+  "id": "DEV-02",
+  "name": "Remove device",
+  "group": "Calls, notifications and devices",
+  "method": "DELETE",
+  "path": "/v1/devices/{id}",
+  "url": "{{baseUrl}}/v1/devices/{id}",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Drawer",
+    "Profile (Logout)"
+  ],
+  "purpose": "Stop pushes to a signed-out phone.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "id": "string | required | from DEV-01"
+    },
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/devices/6adb65a3cf39e842d21784c7",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 204,
+      "example": null
+    },
+    "errors": [
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "Device not found"
+          },
+          "requestId": "1a56be33-3e1f-4d7e-a4d4-ae930ae58dc8"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X DELETE \"http://localhost:5000/v1/devices/6adb65a3cf39e842d21784c7\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "notification.test.js"
+    ],
+    "statusesSeenInTests": [
+      "204 OK",
+      "404 NOT_FOUND"
+    ],
+    "passed": true
+  }
+}

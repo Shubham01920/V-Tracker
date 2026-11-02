@@ -1,0 +1,86 @@
+{
+  "id": "ADR-01",
+  "name": "List addresses",
+  "group": "Addresses",
+  "method": "GET",
+  "path": "/v1/addresses",
+  "url": "{{baseUrl}}/v1/addresses",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Checkout",
+    "Address Book"
+  ],
+  "purpose": "Saved addresses, default first.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/addresses",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "items": [
+            {
+              "id": "6adb65b512adead798553ad8",
+              "name": "Shubham Maurya",
+              "phone": "9876543210",
+              "label": "OFFICE",
+              "line1": "Flat 302, Cyber Towers",
+              "line2": "Madhapur",
+              "pincode": "500081",
+              "city": "Hyderabad",
+              "state": "Telangana",
+              "isDefault": true,
+              "updatedAt": "2026-10-23T13:48:37.097Z"
+            },
+            {
+              "id": "6adb65b512adead798553ad7",
+              "name": "Shubham Maurya",
+              "phone": "9876543210",
+              "label": "HOME",
+              "line1": "Flat 302, Cyber Towers",
+              "line2": "Madhapur",
+              "pincode": "500081",
+              "city": "Hyderabad",
+              "state": "Telangana",
+              "isDefault": false,
+              "updatedAt": "2026-10-23T13:48:37.095Z"
+            }
+          ]
+        },
+        "requestId": "149b07fc-35b5-4f9c-8d64-8973e0936479"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/addresses\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "user.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

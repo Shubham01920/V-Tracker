@@ -1,0 +1,119 @@
+{
+  "id": "VEH-02",
+  "name": "Add vehicle",
+  "group": "Vehicles, QR, contacts and public scan",
+  "method": "POST",
+  "path": "/v1/vehicles",
+  "url": "{{baseUrl}}/v1/vehicles",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Add Vehicle",
+    "QR Activation"
+  ],
+  "purpose": "Create a vehicle. Registration number is normalised (no spaces, upper case) and unique across owners.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "registrationNumber": "string | required | e.g. KA17SP1234",
+      "type": "TWO_WHEELER|THREE_WHEELER|FOUR_WHEELER|COMMERCIAL | required",
+      "model": "string | optional",
+      "color": "string | optional"
+    },
+    "example": {
+      "url": "/v1/vehicles",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "registrationNumber": "KA17SP5981",
+        "type": "FOUR_WHEELER",
+        "model": "Hyundai Creta"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 201,
+      "example": {
+        "data": {
+          "id": "6adb659d383482f27c08238f",
+          "registrationNumber": "KA17SP5981",
+          "type": "FOUR_WHEELER",
+          "model": "Hyundai Creta",
+          "color": "",
+          "qr": null,
+          "createdAt": "2026-10-23T13:48:13.713Z"
+        },
+        "requestId": "75b1f6e1-24ff-42e8-881e-9be41b0e3038"
+      }
+    },
+    "errors": [
+      {
+        "code": "VEHICLE_EXISTS",
+        "status": 409,
+        "example": {
+          "error": {
+            "code": "VEHICLE_EXISTS",
+            "message": "This vehicle is already registered on V Tracker",
+            "details": [
+              {
+                "field": "registrationNumber",
+                "issue": "taken"
+              }
+            ]
+          },
+          "requestId": "e10562ec-29ba-4cda-a02e-6ed3ad4cde15"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "VALIDATION_FAILED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "VALIDATION_FAILED",
+            "message": "Enter a valid registration number, e.g. KA17SP1234",
+            "details": [
+              {
+                "field": "registrationNumber",
+                "issue": "format"
+              }
+            ]
+          },
+          "requestId": "3ae500dc-deb3-4692-857c-76302ff0a1d0"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/vehicles\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"registrationNumber\":\"KA17SP5981\",\"type\":\"FOUR_WHEELER\",\"model\":\"Hyundai Creta\"}'",
+  "testing": {
+    "testedBy": [
+      "errors.test.js",
+      "fastag.test.js",
+      "ratelimit.test.js",
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "201 OK",
+      "409 VEHICLE_EXISTS",
+      "422 VALIDATION_FAILED"
+    ],
+    "passed": true
+  }
+}

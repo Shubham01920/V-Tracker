@@ -1,0 +1,99 @@
+{
+  "id": "DEV-01",
+  "name": "Register device",
+  "group": "Calls, notifications and devices",
+  "method": "POST",
+  "path": "/v1/devices",
+  "url": "{{baseUrl}}/v1/devices",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Navigation shell"
+  ],
+  "purpose": "Register the FCM push token (upsert by token).",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "pushToken": "string | required",
+      "platform": "ANDROID|IOS|WEB | required",
+      "appVersion": "string | optional",
+      "deviceId": "string | optional"
+    },
+    "example": {
+      "url": "/v1/devices",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "pushToken": "fcm-token-abcdefghijk-1",
+        "platform": "ANDROID",
+        "appVersion": "1.0.0",
+        "deviceId": "pixel-7"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 201,
+      "example": {
+        "data": {
+          "id": "6adb65a3cf39e842d21784c7",
+          "platform": "ANDROID",
+          "appVersion": "1.0.0"
+        },
+        "requestId": "7e088beb-a6ed-46fa-82da-bac3eda04e9b"
+      }
+    },
+    "errors": [
+      {
+        "code": "VALIDATION_FAILED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "VALIDATION_FAILED",
+            "message": "Please check the highlighted fields.",
+            "details": [
+              {
+                "field": "pushToken",
+                "issue": "string.min",
+                "message": "pushToken length must be at least 10 characters long"
+              },
+              {
+                "field": "platform",
+                "issue": "any.only",
+                "message": "platform must be one of [ANDROID, IOS, WEB]"
+              }
+            ]
+          },
+          "requestId": "f59245c0-f781-45c7-974d-6ead4f51a38a"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/devices\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"pushToken\":\"fcm-token-abcdefghijk-1\",\"platform\":\"ANDROID\",\"appVersion\":\"1.0.0\",\"deviceId\":\"pixel-7\"}'",
+  "testing": {
+    "testedBy": [
+      "notification.test.js"
+    ],
+    "statusesSeenInTests": [
+      "201 OK",
+      "422 VALIDATION_FAILED"
+    ],
+    "passed": true
+  }
+}

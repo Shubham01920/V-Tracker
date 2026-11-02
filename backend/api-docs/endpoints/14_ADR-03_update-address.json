@@ -1,0 +1,117 @@
+{
+  "id": "ADR-03",
+  "name": "Update address",
+  "group": "Addresses",
+  "method": "PATCH",
+  "path": "/v1/addresses/{id}",
+  "url": "{{baseUrl}}/v1/addresses/{id}",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Address Book"
+  ],
+  "purpose": "Update fields or promote to default.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "id": "string | required"
+    },
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "...": "any ADR-02 field"
+    },
+    "example": {
+      "url": "/v1/addresses/6adb65b512adead798553add",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "line1": "Plot 7, Hitech City",
+        "isDefault": true
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "id": "6adb65b512adead798553add",
+          "name": "Shubham Maurya",
+          "phone": "9876543210",
+          "label": "OFFICE",
+          "line1": "Plot 7, Hitech City",
+          "line2": "Madhapur",
+          "pincode": "500081",
+          "city": "Hyderabad",
+          "state": "Telangana",
+          "isDefault": true,
+          "updatedAt": "2026-10-23T13:48:37.213Z"
+        },
+        "requestId": "30f976d3-3390-4edd-8f0e-b9733f2b1cb7"
+      }
+    },
+    "errors": [
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "Address not found"
+          },
+          "requestId": "2870aad4-da4e-43de-ace6-4199be47c991"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "VALIDATION_FAILED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "VALIDATION_FAILED",
+            "message": "Please check the highlighted fields.",
+            "details": [
+              {
+                "field": "id",
+                "issue": "string.hex",
+                "message": "id must be a valid id"
+              },
+              {
+                "field": "id",
+                "issue": "string.length",
+                "message": "id must be a valid id"
+              }
+            ]
+          },
+          "requestId": "e970dac1-c4e9-4398-a900-8763c75f351a"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X PATCH \"http://localhost:5000/v1/addresses/6adb65b512adead798553add\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"line1\":\"Plot 7, Hitech City\",\"isDefault\":true}'",
+  "testing": {
+    "testedBy": [
+      "user.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "404 NOT_FOUND",
+      "422 VALIDATION_FAILED"
+    ],
+    "passed": true
+  }
+}

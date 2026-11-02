@@ -1,0 +1,77 @@
+{
+  "id": "BNK-03",
+  "name": "IFSC lookup",
+  "group": "Bank, KYC and wallet",
+  "method": "GET",
+  "path": "/v1/lookup/ifsc/{code}",
+  "url": "{{baseUrl}}/v1/lookup/ifsc/{code}",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Bank Details"
+  ],
+  "purpose": "Bank name and branch from IFSC.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "code": "string | required | 11 chars"
+    },
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/lookup/ifsc/hdfc0001234",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "ifsc": "HDFC0001234",
+          "bankName": "HDFC Bank",
+          "branch": "Bengaluru - Koramangala",
+          "city": "Bengaluru"
+        },
+        "requestId": "7d15b94d-c74c-4ea0-9a4f-aa92703c096f"
+      }
+    },
+    "errors": [
+      {
+        "code": "IFSC_INVALID",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "IFSC_INVALID",
+            "message": "IFSC must look like HDFC0001234"
+          },
+          "requestId": "e07185be-b9d9-4879-8225-7e0c3fa24c22"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/lookup/ifsc/hdfc0001234\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "wallet.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "422 IFSC_INVALID"
+    ],
+    "passed": true
+  }
+}

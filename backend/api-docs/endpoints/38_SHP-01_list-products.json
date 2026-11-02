@@ -1,0 +1,142 @@
+{
+  "id": "SHP-01",
+  "name": "List products",
+  "group": "Catalogue, wishlist and cart",
+  "method": "GET",
+  "path": "/v1/products",
+  "url": "{{baseUrl}}/v1/products",
+  "auth": "Optional",
+  "webhook": false,
+  "calledBy": [
+    "Shop"
+  ],
+  "purpose": "Catalogue with integer prices (paise) and image URLs. With a token, each item has wishlisted.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken> (optional)",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {
+      "category": "ALL|PACKAGE|TWO_WHEELER|THREE_WHEELER|FOUR_WHEELER|COMMERCIAL | optional",
+      "q": "string | optional | search",
+      "page": "integer | optional | default 1",
+      "limit": "integer | optional | default 20, max 100"
+    },
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/products",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "items": [
+            {
+              "id": "6adb65b0cf39e842d2178545",
+              "slug": "complete-protection-package",
+              "title": "Complete Protection Package",
+              "subtitle": "5 labels for any vehicle type",
+              "category": "PACKAGE",
+              "pricePaise": 599900,
+              "mrpPaise": 749900,
+              "taxRatePercent": 18,
+              "currency": "INR",
+              "priceNote": "Excl. 18% GST",
+              "rating": 4.8,
+              "ratingCount": 95,
+              "imageUrl": "http://localhost:5000/static/products/package.svg",
+              "inStock": true,
+              "stock": 1000
+            },
+            {
+              "id": "6adb65b0cf39e842d2178543",
+              "slug": "four-wheeler-qr-label",
+              "title": "4 Wheeler QR Label",
+              "subtitle": "Perfect for Cars & SUVs",
+              "category": "FOUR_WHEELER",
+              "pricePaise": 99900,
+              "mrpPaise": 149900,
+              "taxRatePercent": 18,
+              "currency": "INR",
+              "priceNote": "Excl. 18% GST",
+              "rating": 4.9,
+              "ratingCount": 1200,
+              "imageUrl": "http://localhost:5000/static/products/four-wheeler.svg",
+              "inStock": true,
+              "stock": 5000
+            },
+            {
+              "id": "6adb65b0cf39e842d2178541",
+              "slug": "two-wheeler-qr-label",
+              "title": "2 Wheeler QR Label",
+              "subtitle": "Bikes & Scooters",
+              "category": "TWO_WHEELER",
+              "pricePaise": 49900,
+              "mrpPaise": 79900,
+              "taxRatePercent": 18,
+              "currency": "INR",
+              "priceNote": "Excl. 18% GST",
+              "rating": 4.8,
+              "ratingCount": 860,
+              "imageUrl": "http://localhost:5000/static/products/two-wheeler.svg",
+              "inStock": true,
+              "stock": 5000
+            }
+          ]
+        },
+        "meta": {
+          "page": 1,
+          "limit": 20,
+          "total": 5,
+          "hasMore": false
+        },
+        "requestId": "adec05ca-ab3a-4b0c-b1bd-13912198b25a"
+      }
+    },
+    "errors": [
+      {
+        "code": "VALIDATION_FAILED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "VALIDATION_FAILED",
+            "message": "Please check the highlighted fields.",
+            "details": [
+              {
+                "field": "category",
+                "issue": "any.only",
+                "message": "category must be one of [ALL, PACKAGE, TWO_WHEELER, THREE_WHEELER, FOUR_WHEELER, COMMERCIAL]"
+              }
+            ]
+          },
+          "requestId": "dc4766d9-0065-4cf5-ada1-a2c4d1dbe443"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/products\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "shop.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "422 VALIDATION_FAILED"
+    ],
+    "passed": true
+  }
+}

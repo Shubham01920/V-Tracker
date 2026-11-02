@@ -1,0 +1,176 @@
+{
+  "id": "ORD-02",
+  "name": "Order detail",
+  "group": "Orders and tracking",
+  "method": "GET",
+  "path": "/v1/orders/{id}",
+  "url": "{{baseUrl}}/v1/orders/{id}",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Order Detail",
+    "Payment Result"
+  ],
+  "purpose": "Lines, address snapshot, payment state, totals, QR label codes and timeline.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "id": "string | required"
+    },
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/orders/6adb65978277ffe581841470",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "id": "6adb65978277ffe581841470",
+          "orderNumber": "ORD-892301",
+          "status": "PAID",
+          "placedAt": "2026-10-23T13:48:07.972Z",
+          "paidAt": "2026-10-23T13:48:08.006Z",
+          "progressStep": 1,
+          "lines": [
+            {
+              "productId": "6adb6597cf39e842d2178406",
+              "title": "4 Wheeler QR Label",
+              "category": "FOUR_WHEELER",
+              "imageUrl": "http://localhost:5000/static/products/four-wheeler.svg",
+              "unitPricePaise": 99900,
+              "qty": 1,
+              "lineTotalPaise": 99900,
+              "taxPaise": 17982
+            }
+          ],
+          "address": {
+            "name": "Test Owner",
+            "phone": "9876543210",
+            "label": "HOME",
+            "line1": "12, 4th Cross, Koramangala",
+            "line2": "Near Forum Mall",
+            "pincode": "560034",
+            "city": "Bengaluru",
+            "state": "Karnataka"
+          },
+          "payment": {
+            "gateway": "mock",
+            "status": "CAPTURED",
+            "gatewayOrderId": "order_sHdXchFMzpnVog",
+            "gatewayPaymentId": "pay_zfzDh4rumpOw5A",
+            "expiresAt": "2026-10-23T14:18:07.968Z"
+          },
+          "totals": {
+            "subtotalPaise": 99900,
+            "deliveryPaise": 6000,
+            "taxPaise": 17982,
+            "discountPaise": 0,
+            "pointsAppliedPaise": 0,
+            "totalPaise": 123882,
+            "currency": "INR"
+          },
+          "couponCode": null,
+          "qrLabels": [
+            {
+              "code": "QR-CAR-90001",
+              "qrUuid": "c76b3c4b-1b04-4006-931a-9ed443e2d1bb",
+              "vehicleType": "FOUR_WHEELER",
+              "status": "GENERATED"
+            }
+          ],
+          "shipment": {
+            "courier": "Blue Dart Express",
+            "awb": "BD556142934",
+            "eta": "2026-10-27T13:48:08.021Z"
+          },
+          "timeline": [
+            {
+              "status": "PENDING_PAYMENT",
+              "note": "Order created",
+              "at": "2026-10-23T13:48:07.971Z"
+            },
+            {
+              "status": "PAID",
+              "note": "Payment received",
+              "at": "2026-10-23T13:48:08.006Z"
+            }
+          ]
+        },
+        "requestId": "4f1c6399-c295-4c6a-949b-a6f507274ddf"
+      }
+    },
+    "errors": [
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "Order not found"
+          },
+          "requestId": "13587ad5-a517-4ee4-9177-d64ebe3660d8"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "VALIDATION_FAILED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "VALIDATION_FAILED",
+            "message": "Please check the highlighted fields.",
+            "details": [
+              {
+                "field": "id",
+                "issue": "string.hex",
+                "message": "id must be a valid id"
+              },
+              {
+                "field": "id",
+                "issue": "string.length",
+                "message": "id must be a valid id"
+              }
+            ]
+          },
+          "requestId": "0005a0d5-8f0f-49d6-8fa2-23a79b37815f"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/orders/6adb65978277ffe581841470\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "content.test.js",
+      "errors.test.js",
+      "notification.test.js",
+      "ratelimit.test.js",
+      "referral.test.js",
+      "security.test.js",
+      "shop.test.js",
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "422 VALIDATION_FAILED",
+      "404 NOT_FOUND"
+    ],
+    "passed": true
+  }
+}

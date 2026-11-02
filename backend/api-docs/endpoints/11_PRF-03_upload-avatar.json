@@ -1,0 +1,111 @@
+{
+  "id": "PRF-03",
+  "name": "Upload avatar",
+  "group": "Profile",
+  "method": "POST",
+  "path": "/v1/me/avatar",
+  "url": "{{baseUrl}}/v1/me/avatar",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Edit Profile"
+  ],
+  "purpose": "Upload a JPEG/PNG (max 5 MB) as the profile photo.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "multipart/form-data",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "multipart/form-data",
+    "body": {
+      "file": "file | required | image/jpeg or image/png"
+    },
+    "example": {
+      "url": "/v1/me/avatar",
+      "headers": {
+        "content-type": "multipart/form-data; boundary=--------------------------db272f04cf2c389b4aaf10aa"
+      },
+      "body": {
+        "file": "<binary>"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "avatarUrl": "http://localhost:5000/uploads/avatars/6adb65b412adead798553ad1-6WafMEE3Esk.png"
+        },
+        "requestId": "ac7d4d84-d07f-4f74-b730-484d5607610b"
+      }
+    },
+    "errors": [
+      {
+        "code": "FILE_TOO_LARGE",
+        "status": 413,
+        "example": {
+          "error": {
+            "code": "FILE_TOO_LARGE",
+            "message": "File is too large"
+          },
+          "requestId": "8c068aa9-02b7-4e12-96e9-41ee2992f95e"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "UNSUPPORTED_TYPE",
+        "status": 415,
+        "example": {
+          "error": {
+            "code": "UNSUPPORTED_TYPE",
+            "message": "Allowed types: image/jpeg, image/png"
+          },
+          "requestId": "21c0069c-52e8-451a-b5d1-849de20ab4e3"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "FILE_REQUIRED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "FILE_REQUIRED",
+            "message": "Attach a file in the \"file\" field",
+            "details": [
+              {
+                "field": "file",
+                "issue": "required"
+              }
+            ]
+          },
+          "requestId": "efdf9439-59f0-4b7e-9f88-dfb41f5559a2"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/me/avatar\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -F \"file=@/path/to/file\"",
+  "testing": {
+    "testedBy": [
+      "user.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "415 UNSUPPORTED_TYPE",
+      "422 FILE_REQUIRED",
+      "413 FILE_TOO_LARGE"
+    ],
+    "passed": true
+  }
+}

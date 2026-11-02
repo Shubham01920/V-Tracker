@@ -1,0 +1,122 @@
+{
+  "id": "CON-02",
+  "name": "Send alert (app)",
+  "group": "Vehicles, QR, contacts and public scan",
+  "method": "POST",
+  "path": "/v1/contacts/alert",
+  "url": "{{baseUrl}}/v1/contacts/alert",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Vehicle Search"
+  ],
+  "purpose": "Send a preset alert to the owner app + SMS.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "vehicleRef": "string | required",
+      "reason": "enum | required",
+      "note": "string | optional | max 280"
+    },
+    "example": {
+      "url": "/v1/contacts/alert",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "vehicleRef": "vr_RctuLHn8dnehcwKM",
+        "reason": "LIGHTS_ON"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 202,
+      "example": {
+        "data": {
+          "alertId": "6adb65b98ee1a60d3a1394a7"
+        },
+        "requestId": "e7bdadae-781b-4a85-af70-220c997f580d"
+      }
+    },
+    "errors": [
+      {
+        "code": "CONTACT_BLOCKED",
+        "status": 403,
+        "example": {
+          "error": {
+            "code": "CONTACT_BLOCKED",
+            "message": "The owner is not accepting contact from you"
+          },
+          "requestId": "f5c657b3-6f3f-4c02-a4b3-fa89efa5ae30"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "RATE_LIMITED",
+        "status": 429,
+        "example": {
+          "error": {
+            "code": "RATE_LIMITED",
+            "message": "Too many attempts for this vehicle. Please try again later."
+          },
+          "requestId": "f66dc5fd-4f81-4ca8-b907-c49532cf7a75"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "CANNOT_CONTACT_SELF",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "CANNOT_CONTACT_SELF",
+            "message": "This is your own vehicle"
+          },
+          "requestId": "878446d3-5dcb-4297-9d72-daa20f697200"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "Vehicle not found"
+          },
+          "requestId": "40a2097b-5b08-4dba-b58a-13afcac425ec"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/contacts/alert\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"vehicleRef\":\"vr_RctuLHn8dnehcwKM\",\"reason\":\"LIGHTS_ON\"}'",
+  "testing": {
+    "testedBy": [
+      "errors.test.js",
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "422 CANNOT_CONTACT_SELF",
+      "403 CONTACT_BLOCKED",
+      "202 OK",
+      "429 RATE_LIMITED",
+      "404 NOT_FOUND"
+    ],
+    "passed": true
+  }
+}

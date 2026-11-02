@@ -1,0 +1,123 @@
+{
+  "id": "ORD-04",
+  "name": "Courier webhook",
+  "group": "Orders and tracking",
+  "method": "POST",
+  "path": "/v1/webhooks/courier",
+  "url": "{{baseUrl}}/v1/webhooks/courier",
+  "auth": "HMAC",
+  "webhook": true,
+  "calledBy": [
+    "(provider)"
+  ],
+  "purpose": "Courier status events advance the order and its labels (SHIPPED / DELIVERED make labels activatable).",
+  "request": {
+    "headers": {
+      "Content-Type": "application/json",
+      "X-Timestamp": "<unix seconds>",
+      "X-Signature": "<hex HMAC-SHA256 of \"<X-Timestamp>.<raw body>\" with WEBHOOK_SECRET_<PROVIDER>>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "eventId": "string | required",
+      "awb": "string | awb or orderNumber",
+      "orderNumber": "string",
+      "status": "PLACED|PROCESSED|SHIPPED|IN_TRANSIT|OUT_FOR_DELIVERY|DELIVERED",
+      "detail": "string",
+      "location": "string",
+      "at": "ISO date",
+      "eta": "ISO date"
+    },
+    "example": {
+      "url": "/v1/webhooks/courier",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "eventId": "evt_77aa2fd8-3e9d-442f-b83b-561718b78d5f",
+        "awb": "BD443272909",
+        "status": "SHIPPED",
+        "detail": "Picked up"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "received": true,
+          "duplicate": false,
+          "orderId": "6adb659d383482f27c082392",
+          "status": "SHIPPED"
+        },
+        "requestId": "eec8dacd-7166-44b3-ac47-7f979778dc01"
+      }
+    },
+    "errors": [
+      {
+        "code": "SIGNATURE_INVALID",
+        "status": 401,
+        "example": {
+          "error": {
+            "code": "SIGNATURE_INVALID",
+            "message": "Missing signature, timestamp or body"
+          },
+          "requestId": "0a53b9c9-9618-45f5-bbb9-64c9a68e317f"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "VALIDATION_FAILED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "VALIDATION_FAILED",
+            "message": "Please check the highlighted fields.",
+            "details": [
+              {
+                "field": "status",
+                "issue": "any.required",
+                "message": "status is required"
+              },
+              {
+                "field": "body",
+                "issue": "object.missing",
+                "message": "value must contain at least one of [awb, orderNumber]"
+              }
+            ]
+          },
+          "requestId": "85c056fc-5cfd-409f-bcf6-47875254d585"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/webhooks/courier\" \\\n  -H \"X-Timestamp: $TS\" -H \"X-Signature: $SIG\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"eventId\":\"evt_77aa2fd8-3e9d-442f-b83b-561718b78d5f\",\"awb\":\"BD443272909\",\"status\":\"SHIPPED\",\"detail\":\"Picked up\"}'",
+  "testing": {
+    "testedBy": [
+      "errors.test.js",
+      "notification.test.js",
+      "ratelimit.test.js",
+      "security.test.js",
+      "shop.test.js",
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "401 SIGNATURE_INVALID",
+      "422 VALIDATION_FAILED"
+    ],
+    "passed": true
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "id": "REF-01",
+  "name": "Referral summary",
+  "group": "Rewards, referral and payouts",
+  "method": "GET",
+  "path": "/v1/referral/summary",
+  "url": "{{baseUrl}}/v1/referral/summary",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Refer and Earn"
+  ],
+  "purpose": "Own code, share link + message, total earned and card count.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/referral/summary",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "code": "VTBK9KDK",
+          "shareUrl": "http://localhost:5000/r/VTBK9KDK",
+          "shareText": "Protect your vehicle with V Tracker - people can reach you without seeing your number. Sign up with my code VTBK9KDK: http://localhost:5000/r/VTBK9KDK",
+          "totalEarnedPaise": 0,
+          "rewardCashbackPaise": 0,
+          "scratchCardCount": 2
+        },
+        "requestId": "55b39f70-f26d-4dd9-ac56-f930a97b3b33"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/referral/summary\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "referral.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

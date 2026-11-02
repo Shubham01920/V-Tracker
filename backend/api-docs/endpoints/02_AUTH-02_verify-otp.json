@@ -1,0 +1,149 @@
+{
+  "id": "AUTH-02",
+  "name": "Verify OTP",
+  "group": "Authentication",
+  "method": "POST",
+  "path": "/v1/auth/verify-otp",
+  "url": "{{baseUrl}}/v1/auth/verify-otp",
+  "auth": "None",
+  "webhook": false,
+  "calledBy": [
+    "OTP verification"
+  ],
+  "purpose": "Confirm the 6-digit code; activates the account (or applies a phone / alert-number change) and returns tokens.",
+  "request": {
+    "headers": {
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "challengeId": "uuid | required | from AUTH-01 / PRF-02",
+      "code": "string | required | 6 digits",
+      "deviceId": "string | optional"
+    },
+    "example": {
+      "url": "/v1/auth/verify-otp",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "challengeId": "abcd6e6a-2990-4435-9b99-b72acd80ba0a",
+        "code": "325052"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "accessToken": "eyJhbGciOiJIUzI1NiIsInR5...<JWT>",
+          "refreshToken": "iGaBr51CxvXP...",
+          "expiresIn": 900,
+          "tokenType": "Bearer",
+          "user": {
+            "id": "6adb6594c2a2a49ecda831d1",
+            "memberId": "VT100001",
+            "fullName": "Shubham Maurya",
+            "email": "user.mvl0yzlz134382@example.com",
+            "emailMasked": "us*****************@example.com",
+            "emailVerified": false,
+            "phoneMasked": "91******69",
+            "phoneLast4": "4369",
+            "phoneVerified": true,
+            "alertPhoneMasked": "91******69",
+            "alertPhoneVerified": true,
+            "pendingPhoneVerification": false,
+            "pendingAlertPhoneVerification": false,
+            "avatarUrl": null,
+            "address": null,
+            "place": null,
+            "city": null,
+            "state": null,
+            "pincode": null,
+            "locality": null,
+            "nearBy": null,
+            "referralCode": "VT9VNS5F",
+            "kycStatus": "NOT_SUBMITTED",
+            "pointsBalance": 0,
+            "role": "OWNER",
+            "createdAt": "2026-10-23T13:48:04.748Z"
+          },
+          "purpose": "REGISTER"
+        },
+        "requestId": "97b2b5d6-a486-4e05-a343-489f811d49ce"
+      }
+    },
+    "errors": [
+      {
+        "code": "OTP_INVALID",
+        "status": 400,
+        "example": {
+          "error": {
+            "code": "OTP_INVALID",
+            "message": "This code is no longer valid. Request a new one."
+          },
+          "requestId": "c3ee191e-7b06-4129-b3b3-2a4d903eaf7d"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "OTP_EXPIRED",
+        "status": 410,
+        "example": {
+          "error": {
+            "code": "OTP_EXPIRED",
+            "message": "The code has expired. Request a new one."
+          },
+          "requestId": "25baf574-c137-48d7-8e5c-6e4e47a049cf"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "OTP_ATTEMPTS_EXCEEDED",
+        "status": 429,
+        "example": {
+          "error": {
+            "code": "OTP_ATTEMPTS_EXCEEDED",
+            "message": "Too many wrong attempts. Request a new code."
+          },
+          "requestId": "80d06e8f-c812-47df-a05c-2eaeefa047b0"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": "Code expires after 5 minutes; 5 wrong attempts invalidate it.",
+  "curl": "curl -X POST \"http://localhost:5000/v1/auth/verify-otp\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"challengeId\":\"abcd6e6a-2990-4435-9b99-b72acd80ba0a\",\"code\":\"325052\"}'",
+  "testing": {
+    "testedBy": [
+      "auth.test.js",
+      "content.test.js",
+      "document.test.js",
+      "errors.test.js",
+      "fastag.test.js",
+      "notification.test.js",
+      "referral.test.js",
+      "security.test.js",
+      "shop.test.js",
+      "user.test.js",
+      "vehicle.test.js",
+      "wallet.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "400 OTP_INVALID",
+      "429 OTP_ATTEMPTS_EXCEEDED",
+      "410 OTP_EXPIRED"
+    ],
+    "passed": true
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "id": "PAY-01",
+  "name": "List payouts",
+  "group": "Rewards, referral and payouts",
+  "method": "GET",
+  "path": "/v1/payouts",
+  "url": "{{baseUrl}}/v1/payouts",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Payout History"
+  ],
+  "purpose": "Referral payout records.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {
+      "status": "PENDING|CREDITED|REVERSED | optional",
+      "page": "integer | optional | default 1",
+      "limit": "integer | optional | default 20, max 100"
+    },
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/payouts",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "items": [
+            {
+              "id": "6adb65abd68566999ab149cf",
+              "amountPaise": 1000,
+              "step": "S2",
+              "level": 2,
+              "title": "Team 2 Referral Bonus",
+              "status": "PENDING",
+              "from": {
+                "name": "Level Two",
+                "userId": "VT100006"
+              },
+              "at": "2026-10-23T13:48:27.161Z",
+              "creditedAt": null
+            }
+          ]
+        },
+        "meta": {
+          "page": 1,
+          "limit": 20,
+          "total": 1,
+          "hasMore": false
+        },
+        "requestId": "da17c081-24cb-49ed-9768-844ca4b5a16c"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/payouts\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "referral.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

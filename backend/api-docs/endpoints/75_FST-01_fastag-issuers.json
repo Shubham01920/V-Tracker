@@ -1,0 +1,71 @@
+{
+  "id": "FST-01",
+  "name": "FASTag issuers",
+  "group": "FASTag",
+  "method": "GET",
+  "path": "/v1/fastag/issuers",
+  "url": "{{baseUrl}}/v1/fastag/issuers",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "FASTag Recharge"
+  ],
+  "purpose": "Supported issuer banks.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/fastag/issuers",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "items": [
+            {
+              "code": "ICICI",
+              "name": "ICICI Bank"
+            },
+            {
+              "code": "HDFC",
+              "name": "HDFC Bank"
+            },
+            {
+              "code": "SBI",
+              "name": "State Bank of India"
+            }
+          ]
+        },
+        "requestId": "efb34145-9db1-4c45-8485-f9c78de0c615"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/fastag/issuers\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "fastag.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

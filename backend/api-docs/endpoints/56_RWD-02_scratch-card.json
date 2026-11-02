@@ -1,0 +1,120 @@
+{
+  "id": "RWD-02",
+  "name": "Scratch card",
+  "group": "Rewards, referral and payouts",
+  "method": "POST",
+  "path": "/v1/rewards/{id}/scratch",
+  "url": "{{baseUrl}}/v1/rewards/{id}/scratch",
+  "auth": "Bearer + Idempotency-Key",
+  "webhook": false,
+  "calledBy": [
+    "Rewards"
+  ],
+  "purpose": "Server decides and records the amount and credits the wallet. Repeating with the same Idempotency-Key returns the same result.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "Idempotency-Key": "<new UUID per new request; reuse it only to retry the same request>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "id": "string | required"
+    },
+    "query": {},
+    "bodyType": "application/json",
+    "body": {},
+    "example": {
+      "url": "/v1/rewards/6adb65aad68566999ab149a1/scratch",
+      "headers": {
+        "idempotency-key": "24338d6a-9aac-4e79-a9ed-7dc8c36f2fa6"
+      },
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "id": "6adb65aad68566999ab149a1",
+          "amountPaise": 10000,
+          "code": null,
+          "description": "₹100 cashback added to your wallet"
+        },
+        "requestId": "1e273b51-1026-4107-8455-8debfec7eb9a"
+      }
+    },
+    "errors": [
+      {
+        "code": "REWARD_ALREADY_SCRATCHED",
+        "status": 409,
+        "example": {
+          "error": {
+            "code": "REWARD_ALREADY_SCRATCHED",
+            "message": "This card was already scratched"
+          },
+          "requestId": "e2103310-a450-44ba-93d8-2fcf24d855a7"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "REWARD_EXPIRED",
+        "status": 410,
+        "example": {
+          "error": {
+            "code": "REWARD_EXPIRED",
+            "message": "This card has expired"
+          },
+          "requestId": "ac4695d9-315a-472f-97da-c80ea7191f61"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "IDEMPOTENCY_KEY_REQUIRED",
+        "status": 400,
+        "example": {
+          "error": {
+            "code": "IDEMPOTENCY_KEY_REQUIRED",
+            "message": "Idempotency-Key header is required for this request"
+          },
+          "requestId": "fda2c246-ce84-4ef1-9bef-e23768a062bb"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "Reward not found"
+          },
+          "requestId": "bf0f1bfe-d763-4745-84d8-d3c181af4cf1"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/rewards/6adb65aad68566999ab149a1/scratch\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Idempotency-Key: $(uuidgen)\"",
+  "testing": {
+    "testedBy": [
+      "referral.test.js"
+    ],
+    "statusesSeenInTests": [
+      "400 IDEMPOTENCY_KEY_REQUIRED",
+      "200 OK",
+      "409 REWARD_ALREADY_SCRATCHED",
+      "404 NOT_FOUND",
+      "410 REWARD_EXPIRED"
+    ],
+    "passed": true
+  }
+}

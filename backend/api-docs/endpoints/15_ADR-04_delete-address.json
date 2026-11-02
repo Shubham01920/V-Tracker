@@ -1,0 +1,70 @@
+{
+  "id": "ADR-04",
+  "name": "Delete address",
+  "group": "Addresses",
+  "method": "DELETE",
+  "path": "/v1/addresses/{id}",
+  "url": "{{baseUrl}}/v1/addresses/{id}",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Address Book"
+  ],
+  "purpose": "Delete; if it was the default the oldest remaining address becomes default.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "id": "string | required"
+    },
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/addresses/6adb659e383482f27c0823ad",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 204,
+      "example": null
+    },
+    "errors": [
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "Address not found"
+          },
+          "requestId": "1d876149-ce07-426d-926b-2618742410c7"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X DELETE \"http://localhost:5000/v1/addresses/6adb659e383482f27c0823ad\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "errors.test.js",
+      "user.test.js"
+    ],
+    "statusesSeenInTests": [
+      "204 OK",
+      "404 NOT_FOUND"
+    ],
+    "passed": true
+  }
+}

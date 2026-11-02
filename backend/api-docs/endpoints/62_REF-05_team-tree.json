@@ -1,0 +1,126 @@
+{
+  "id": "REF-05",
+  "name": "Team tree",
+  "group": "Rewards, referral and payouts",
+  "method": "GET",
+  "path": "/v1/referral/team/tree",
+  "url": "{{baseUrl}}/v1/referral/team/tree",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Team Performance"
+  ],
+  "purpose": "Lazy-loaded children of one node (default: me).",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {
+      "parentId": "string | optional",
+      "depth": "integer | optional | 1-2",
+      "page": "integer | optional | default 1",
+      "limit": "integer | optional | default 20, max 100"
+    },
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/referral/team/tree?depth=2",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "parent": {
+            "id": "6adb65aad68566999ab149ad",
+            "step": 1,
+            "stepLabel": "S1",
+            "name": "Basavarajappa K",
+            "userId": "VT100003",
+            "joinedAt": "2026-10-23T13:48:26.776Z",
+            "status": "INACTIVE",
+            "childCount": 2
+          },
+          "nodes": [
+            {
+              "id": "6adb65aad68566999ab149b0",
+              "step": 2,
+              "stepLabel": "S2",
+              "name": "Khaja Vali M",
+              "userId": "VT100004",
+              "joinedAt": "2026-10-23T13:48:26.813Z",
+              "status": "INACTIVE",
+              "childCount": 1,
+              "children": [
+                {
+                  "id": "6adb65aad68566999ab149c0",
+                  "step": 3,
+                  "stepLabel": "S3",
+                  "name": "Level Two",
+                  "userId": "VT100006",
+                  "joinedAt": "2026-10-23T13:48:26.951Z",
+                  "status": "ACTIVE",
+                  "childCount": 0
+                }
+              ]
+            },
+            {
+              "id": "6adb65aad68566999ab149b8",
+              "step": 2,
+              "stepLabel": "S2",
+              "name": "Ganesha K",
+              "userId": "VT100005",
+              "joinedAt": "2026-10-23T13:48:26.877Z",
+              "status": "ACTIVE",
+              "childCount": 0
+            }
+          ]
+        },
+        "meta": {
+          "page": 1,
+          "limit": 20,
+          "total": 2,
+          "hasMore": false
+        },
+        "requestId": "8b869ea3-d858-4fcd-a8b6-9fde079b3452"
+      }
+    },
+    "errors": [
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "Team member not found"
+          },
+          "requestId": "478f86da-400d-487f-b588-0bd143a8edcf"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/referral/team/tree?depth=2\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "referral.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "404 NOT_FOUND"
+    ],
+    "passed": true
+  }
+}

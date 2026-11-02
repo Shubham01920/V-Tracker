@@ -1,0 +1,183 @@
+{
+  "id": "CHK-01",
+  "name": "Checkout summary",
+  "group": "Checkout and payments",
+  "method": "GET",
+  "path": "/v1/checkout/summary",
+  "url": "{{baseUrl}}/v1/checkout/summary",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Checkout"
+  ],
+  "purpose": "Server-computed delivery, tax, discounts and total. The app only displays them.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {
+      "addressId": "string | optional | default address if omitted",
+      "couponCode": "string | optional",
+      "redeemPoints": "boolean | optional"
+    },
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/checkout/summary?addressId=6adb65978277ffe58184146e",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "lines": [
+            {
+              "productId": "6adb6597cf39e842d2178406",
+              "title": "4 Wheeler QR Label",
+              "subtitle": "Perfect for Cars & SUVs",
+              "category": "FOUR_WHEELER",
+              "imageUrl": "http://localhost:5000/static/products/four-wheeler.svg",
+              "unitPricePaise": 99900,
+              "qty": 1,
+              "lineTotalPaise": 99900,
+              "taxRatePercent": 18,
+              "inStock": true
+            }
+          ],
+          "address": {
+            "id": "6adb65978277ffe58184146e",
+            "name": "Test Owner",
+            "line1": "12, 4th Cross, Koramangala",
+            "line2": "Near Forum Mall",
+            "city": "Bengaluru",
+            "state": "Karnataka",
+            "pincode": "560034"
+          },
+          "subtotalPaise": 99900,
+          "deliveryPaise": 6000,
+          "taxPaise": 17982,
+          "discountPaise": 0,
+          "couponCode": null,
+          "pointsAppliedPaise": 0,
+          "pointsUsed": 0,
+          "totalPaise": 123882,
+          "currency": "INR",
+          "availablePoints": 0,
+          "pointsRule": {
+            "minRedeem": 250,
+            "redeemBlock": 250,
+            "valuePerBlockPaise": 2500,
+            "label": "250 pts = ₹25"
+          }
+        },
+        "requestId": "2385950d-93a4-41c5-9dcb-c0107c10843f"
+      }
+    },
+    "errors": [
+      {
+        "code": "ADDRESS_NOT_SERVICEABLE",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "ADDRESS_NOT_SERVICEABLE",
+            "message": "We do not deliver to this pincode yet",
+            "details": [
+              {
+                "field": "addressId",
+                "issue": "not_serviceable"
+              }
+            ]
+          },
+          "requestId": "85ca4c31-8a63-4e09-9898-9c28a5ba03bd"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "COUPON_INVALID",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "COUPON_INVALID",
+            "message": "This coupon code is not valid",
+            "details": [
+              {
+                "field": "couponCode",
+                "issue": "invalid"
+              }
+            ]
+          },
+          "requestId": "ac9cce59-72bf-464a-af48-10be2bf60227"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "COUPON_EXPIRED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "COUPON_EXPIRED",
+            "message": "This coupon has expired",
+            "details": [
+              {
+                "field": "couponCode",
+                "issue": "expired"
+              }
+            ]
+          },
+          "requestId": "0a7ff4a9-9a36-4918-b2ef-98327e43cb4e"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "COUPON_LIMIT",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "COUPON_LIMIT",
+            "message": "This coupon is fully used",
+            "details": [
+              {
+                "field": "couponCode",
+                "issue": "limit"
+              }
+            ]
+          },
+          "requestId": "40a40117-5814-4c55-97d6-0d7b35899ac2"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/checkout/summary?addressId=6adb65978277ffe58184146e\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "content.test.js",
+      "errors.test.js",
+      "notification.test.js",
+      "ratelimit.test.js",
+      "referral.test.js",
+      "shop.test.js",
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "422 ADDRESS_NOT_SERVICEABLE",
+      "422 COUPON_EXPIRED",
+      "422 COUPON_LIMIT",
+      "422 COUPON_INVALID"
+    ],
+    "passed": true
+  }
+}

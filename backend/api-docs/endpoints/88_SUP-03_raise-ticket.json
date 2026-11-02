@@ -1,0 +1,106 @@
+{
+  "id": "SUP-03",
+  "name": "Raise ticket",
+  "group": "Content, support, config and lookups",
+  "method": "POST",
+  "path": "/v1/support/tickets",
+  "url": "{{baseUrl}}/v1/support/tickets",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Help and Support"
+  ],
+  "purpose": "Create a support ticket.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "category": "ORDER|QR_LABEL|CALLS|PAYMENTS|WITHDRAWAL|FASTAG|DOCUMENTS|ACCOUNT|OTHER | required",
+      "message": "string | required | 10-2000",
+      "orderId": "string | optional",
+      "vehicleId": "string | optional"
+    },
+    "example": {
+      "url": "/v1/support/tickets",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "category": "ORDER",
+        "message": "My label has not arrived yet",
+        "orderId": "6adb65978277ffe581841470"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 201,
+      "example": {
+        "data": {
+          "ticketId": "6adb65988277ffe581841474",
+          "ticketNumber": "VT-10001",
+          "status": "OPEN"
+        },
+        "requestId": "88fd34ff-c3ed-4c7f-855a-12baafb0a354"
+      }
+    },
+    "errors": [
+      {
+        "code": "VALIDATION_FAILED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "VALIDATION_FAILED",
+            "message": "Please check the highlighted fields.",
+            "details": [
+              {
+                "field": "message",
+                "issue": "string.min",
+                "message": "message length must be at least 10 characters long"
+              }
+            ]
+          },
+          "requestId": "55ce47f0-564c-4037-8618-aa77b894e153"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "UNAUTHORIZED",
+        "status": 401,
+        "example": {
+          "error": {
+            "code": "UNAUTHORIZED",
+            "message": "Missing bearer token"
+          },
+          "requestId": "ebb115af-a40f-4f32-a0f7-b12f62fe71a4"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/support/tickets\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"category\":\"ORDER\",\"message\":\"My label has not arrived yet\",\"orderId\":\"6adb65978277ffe581841470\"}'",
+  "testing": {
+    "testedBy": [
+      "content.test.js"
+    ],
+    "statusesSeenInTests": [
+      "401 UNAUTHORIZED",
+      "201 OK",
+      "422 VALIDATION_FAILED"
+    ],
+    "passed": true
+  }
+}

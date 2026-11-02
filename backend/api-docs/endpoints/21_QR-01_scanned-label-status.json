@@ -1,0 +1,98 @@
+{
+  "id": "QR-01",
+  "name": "Scanned label status",
+  "group": "Vehicles, QR, contacts and public scan",
+  "method": "GET",
+  "path": "/v1/qr/{qrUuid}/status",
+  "url": "{{baseUrl}}/v1/qr/{qrUuid}/status",
+  "auth": "Optional",
+  "webhook": false,
+  "calledBy": [
+    "Scan tab"
+  ],
+  "purpose": "Tell the app what a scanned code is: UNACTIVATED, ACTIVE_OWN, ACTIVE_OTHER or INVALID.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken> (optional)",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "qrUuid": "uuid | required"
+    },
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/qr/9a5f94b3-b01c-477d-8f88-6755590e36bb/status",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "state": "UNACTIVATED",
+          "vehicleType": "FOUR_WHEELER",
+          "maskedPlate": null,
+          "code": "QR-CAR-90002",
+          "canActivate": true
+        },
+        "requestId": "980cdcaa-d6ee-456a-b96c-4959bb96fda1"
+      }
+    },
+    "errors": [
+      {
+        "code": "QR_NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "QR_NOT_FOUND",
+            "message": "This is not a V Tracker label"
+          },
+          "requestId": "117a84ae-d1cf-4e65-941b-5187909d9779"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "VALIDATION_FAILED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "VALIDATION_FAILED",
+            "message": "Please check the highlighted fields.",
+            "details": [
+              {
+                "field": "qrUuid",
+                "issue": "string.guid",
+                "message": "Not a V Tracker label"
+              }
+            ]
+          },
+          "requestId": "47778123-0be4-410b-9cd7-080a41aa2105"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/qr/9a5f94b3-b01c-477d-8f88-6755590e36bb/status\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "404 QR_NOT_FOUND",
+      "422 VALIDATION_FAILED"
+    ],
+    "passed": true
+  }
+}

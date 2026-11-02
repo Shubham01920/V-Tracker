@@ -1,0 +1,217 @@
+{
+  "id": "WAL-02",
+  "name": "Request withdrawal",
+  "group": "Bank, KYC and wallet",
+  "method": "POST",
+  "path": "/v1/withdrawals",
+  "url": "{{baseUrl}}/v1/withdrawals",
+  "auth": "Bearer + Idempotency-Key + recent re-authentication",
+  "webhook": false,
+  "calledBy": [
+    "Withdraw"
+  ],
+  "purpose": "Create a payout request, hold the amount and send it to the payout provider.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "Idempotency-Key": "<new UUID per new request; reuse it only to retry the same request>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "amountPaise": "integer | required | min 50000",
+      "mode": "BANK|UPI | optional",
+      "currentPassword": "string | required if login older than 15 min"
+    },
+    "example": {
+      "url": "/v1/withdrawals",
+      "headers": {
+        "idempotency-key": "4b0a1b4d-8e5b-43b9-8851-62316e674de2",
+        "content-type": "application/json"
+      },
+      "body": {
+        "amountPaise": 250000,
+        "mode": "BANK"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 202,
+      "example": {
+        "data": {
+          "id": "6adb65bd71f497c38a204147",
+          "txnId": "TXN17927633256964863",
+          "status": "PENDING",
+          "amountPaise": 250000,
+          "mode": "BANK"
+        },
+        "requestId": "28085fc4-f484-40e6-aecc-993534ce1958"
+      }
+    },
+    "errors": [
+      {
+        "code": "INSUFFICIENT_BALANCE",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "INSUFFICIENT_BALANCE",
+            "message": "Amount is more than your available balance"
+          },
+          "requestId": "efe009f0-1348-4254-8797-21531b3b3da4"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "BELOW_MINIMUM",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "BELOW_MINIMUM",
+            "message": "Minimum withdrawal is ₹500",
+            "details": [
+              {
+                "field": "amountPaise",
+                "issue": "min"
+              }
+            ]
+          },
+          "requestId": "432fd444-f867-4e42-a8d5-9f95af50087b"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "ABOVE_MAXIMUM",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "ABOVE_MAXIMUM",
+            "message": "Maximum withdrawal is ₹50,000",
+            "details": [
+              {
+                "field": "amountPaise",
+                "issue": "max"
+              }
+            ]
+          },
+          "requestId": "a10aad08-bb31-45d1-9e2d-23f18e5e9e82"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "KYC_REQUIRED",
+        "status": 403,
+        "example": {
+          "error": {
+            "code": "KYC_REQUIRED",
+            "message": "Verify your PAN before withdrawing"
+          },
+          "requestId": "86d253c3-e38c-4a9b-a489-accf1b908822"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "BANK_NOT_VERIFIED",
+        "status": 403,
+        "example": {
+          "error": {
+            "code": "BANK_NOT_VERIFIED",
+            "message": "Add and verify a bank account first"
+          },
+          "requestId": "9e11cd1b-db50-461d-81b9-2d7bd13b9440"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "BANK_COOLDOWN",
+        "status": 403,
+        "example": {
+          "error": {
+            "code": "BANK_COOLDOWN",
+            "message": "Withdrawals resume at 2026-10-23T14:48:45.628Z after a bank change"
+          },
+          "requestId": "d91777fa-7a07-44bf-80c2-032e43e0a4d7"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "REAUTH_REQUIRED",
+        "status": 401,
+        "example": {
+          "error": {
+            "code": "REAUTH_REQUIRED",
+            "message": "Please confirm your password to continue",
+            "details": [
+              {
+                "field": "currentPassword",
+                "issue": "required"
+              }
+            ]
+          },
+          "requestId": "bb16d7dd-6233-4638-a414-52952a18e387"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "IDEMPOTENCY_KEY_REQUIRED",
+        "status": 400,
+        "example": {
+          "error": {
+            "code": "IDEMPOTENCY_KEY_REQUIRED",
+            "message": "Idempotency-Key header is required for this request"
+          },
+          "requestId": "a058c82e-04e7-4f7e-8b45-569594996749"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "UPI_NOT_SET",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "UPI_NOT_SET",
+            "message": "Add a UPI ID in Bank Details first",
+            "details": [
+              {
+                "field": "mode",
+                "issue": "upi_missing"
+              }
+            ]
+          },
+          "requestId": "504ceb04-f6d7-435d-b28e-cc1271604e0a"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/withdrawals\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Idempotency-Key: $(uuidgen)\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"amountPaise\":250000,\"mode\":\"BANK\"}'",
+  "testing": {
+    "testedBy": [
+      "errors.test.js",
+      "wallet.test.js"
+    ],
+    "statusesSeenInTests": [
+      "401 REAUTH_REQUIRED",
+      "400 IDEMPOTENCY_KEY_REQUIRED",
+      "422 BELOW_MINIMUM",
+      "422 ABOVE_MAXIMUM",
+      "403 KYC_REQUIRED",
+      "403 BANK_NOT_VERIFIED",
+      "422 UPI_NOT_SET",
+      "422 INSUFFICIENT_BALANCE",
+      "403 BANK_COOLDOWN",
+      "202 OK"
+    ],
+    "passed": true
+  }
+}

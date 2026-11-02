@@ -44,6 +44,14 @@ class _ShopScreenState extends State<ShopScreen> {
   // List of all products matching the mockup
   final List<Product> _allProducts = const [
     Product(
+      title: AppStrings.shopProductPackageTitle,
+      subtitle: AppStrings.shopProductPackageSubtitle,
+      price: AppStrings.shopProductPackagePrice,
+      rating: 5.0,
+      imagePath: "assets/images/gift_box.png",
+      category: AppStrings.shopProductPackageCategory,
+    ),
+    Product(
       title: AppStrings.shopProduct2WheelerTitle,
       subtitle: AppStrings.shopProduct2WheelerSubtitle,
       price: AppStrings.shopProduct2WheelerPrice,
@@ -125,6 +133,7 @@ class _ShopScreenState extends State<ShopScreen> {
               child: Row(
                 children: [
                   _buildCategoryPill(AppStrings.shopCategoryAll),
+                  _buildCategoryPill(AppStrings.shopProductPackageCategory),
                   _buildCategoryPill(AppStrings.shopProduct2WheelerCategory),
                   _buildCategoryPill(AppStrings.shopProduct3WheelerCategory),
                   _buildCategoryPill(AppStrings.shopProduct4WheelerCategory),

@@ -1,0 +1,61 @@
+{
+  "id": "RWD-03",
+  "name": "Rewards summary",
+  "group": "Rewards, referral and payouts",
+  "method": "GET",
+  "path": "/v1/rewards/summary",
+  "url": "{{baseUrl}}/v1/rewards/summary",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Rewards"
+  ],
+  "purpose": "Total cashback, points and unscratched count.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/rewards/summary",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "totalCashbackPaise": 10000,
+          "pointsBalance": 0,
+          "pointsValuePaise": 0,
+          "unscratchedCount": 0
+        },
+        "requestId": "11c31e05-7403-457a-906a-67f2746c1e6f"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/rewards/summary\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "referral.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "id": "CHK-02",
+  "name": "Validate coupon",
+  "group": "Checkout and payments",
+  "method": "POST",
+  "path": "/v1/coupons/validate",
+  "url": "{{baseUrl}}/v1/coupons/validate",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Checkout"
+  ],
+  "purpose": "Check a coupon against cart value, user and dates.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "code": "string | required",
+      "subtotalPaise": "integer | required"
+    },
+    "example": {
+      "url": "/v1/coupons/validate",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "code": "SAVE10",
+        "subtotalPaise": 150000
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "valid": true,
+          "code": "SAVE10",
+          "discountPaise": 15000,
+          "description": "10% off, up to ₹200",
+          "reason": null
+        },
+        "requestId": "2246b8db-a0a4-4350-90f6-f8a9126e3cbd"
+      }
+    },
+    "errors": [
+      {
+        "code": "COUPON_INVALID",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "COUPON_INVALID",
+            "message": "Add items worth ₹989 more to use this coupon",
+            "details": [
+              {
+                "field": "couponCode",
+                "issue": "min_subtotal",
+                "minSubtotalPaise": 99900
+              }
+            ]
+          },
+          "requestId": "f197def4-66a7-40e5-a118-f156cc24d007"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "COUPON_EXPIRED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "COUPON_EXPIRED",
+            "message": "This coupon has expired",
+            "details": [
+              {
+                "field": "couponCode",
+                "issue": "expired"
+              }
+            ]
+          },
+          "requestId": "4376e7c0-ebc3-495b-b616-a98e67ea3064"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "COUPON_LIMIT",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "COUPON_LIMIT",
+            "message": "This coupon is fully used",
+            "details": [
+              {
+                "field": "couponCode",
+                "issue": "limit"
+              }
+            ]
+          },
+          "requestId": "c0fa549b-7220-414a-a679-5e984c8cff63"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/coupons/validate\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"code\":\"SAVE10\",\"subtotalPaise\":150000}'",
+  "testing": {
+    "testedBy": [
+      "shop.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "422 COUPON_INVALID",
+      "422 COUPON_EXPIRED",
+      "422 COUPON_LIMIT"
+    ],
+    "passed": true
+  }
+}

@@ -1,0 +1,177 @@
+{
+  "id": "AUTH-03",
+  "name": "Login",
+  "group": "Authentication",
+  "method": "POST",
+  "path": "/v1/auth/login",
+  "url": "{{baseUrl}}/v1/auth/login",
+  "auth": "None",
+  "webhook": false,
+  "calledBy": [
+    "Login tab"
+  ],
+  "purpose": "E-mail + password sign-in. Same error for unknown e-mail and wrong password.",
+  "request": {
+    "headers": {
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "email": "string | required",
+      "password": "string | required",
+      "deviceId": "string | optional"
+    },
+    "example": {
+      "url": "/v1/auth/login",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "email": "user.mvl0yzuv181974@example.com",
+        "password": "Secret@123",
+        "deviceId": "pixel-7"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "accessToken": "eyJhbGciOiJIUzI1NiIsInR5...<JWT>",
+          "refreshToken": "ulbd4oN5iNfN...",
+          "expiresIn": 900,
+          "tokenType": "Bearer",
+          "user": {
+            "id": "6adb6595c2a2a49ecda831de",
+            "memberId": "VT100006",
+            "fullName": "Test Owner",
+            "email": "user.mvl0yzuv181974@example.com",
+            "emailMasked": "us*****************@example.com",
+            "emailVerified": false,
+            "phoneMasked": "91******93",
+            "phoneLast4": "9893",
+            "phoneVerified": true,
+            "alertPhoneMasked": "91******93",
+            "alertPhoneVerified": true,
+            "pendingPhoneVerification": false,
+            "pendingAlertPhoneVerification": false,
+            "avatarUrl": null,
+            "address": null,
+            "place": null,
+            "city": null,
+            "state": null,
+            "pincode": null,
+            "locality": null,
+            "nearBy": null,
+            "referralCode": "VTNBJSEJ",
+            "kycStatus": "NOT_SUBMITTED",
+            "pointsBalance": 0,
+            "role": "OWNER",
+            "createdAt": "2026-10-23T13:48:05.015Z"
+          }
+        },
+        "requestId": "990c58c2-a548-4575-af58-0249d66e5648"
+      }
+    },
+    "errors": [
+      {
+        "code": "INVALID_CREDENTIALS",
+        "status": 401,
+        "example": {
+          "error": {
+            "code": "INVALID_CREDENTIALS",
+            "message": "E-mail or password is incorrect"
+          },
+          "requestId": "c0c4be4d-e6e1-423c-9a91-fe7105389dd3"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "ACCOUNT_LOCKED",
+        "status": 423,
+        "example": {
+          "error": {
+            "code": "ACCOUNT_LOCKED",
+            "message": "Too many failed attempts. Try again in 15 minutes."
+          },
+          "requestId": "d7ecb6d4-b583-4b00-9e36-8a3c8b60a61e"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "PHONE_NOT_VERIFIED",
+        "status": 403,
+        "example": {
+          "error": {
+            "code": "PHONE_NOT_VERIFIED",
+            "message": "Verify your phone number to continue",
+            "details": [
+              {
+                "field": "phone",
+                "issue": "not_verified",
+                "verification": {
+                  "challengeId": "a494a4e1-585a-43c0-a452-69cca673f180",
+                  "resendAfterSec": 0,
+                  "expiresInSec": 300,
+                  "phoneMasked": "******7825",
+                  "devCode": "569911"
+                }
+              }
+            ]
+          },
+          "requestId": "f81ea3a4-c5e3-45f4-9a76-b9f5bf60237a"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "VALIDATION_FAILED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "VALIDATION_FAILED",
+            "message": "Please check the highlighted fields.",
+            "details": [
+              {
+                "field": "email",
+                "issue": "string.base",
+                "message": "email must be a string"
+              },
+              {
+                "field": "password",
+                "issue": "string.base",
+                "message": "password must be a string"
+              }
+            ]
+          },
+          "requestId": "18a730e8-ee39-4e14-92aa-6c8ac37bb1ea"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": "5 failures lock the account for 15 minutes. PHONE_NOT_VERIFIED includes a fresh verification challenge in error.details.",
+  "curl": "curl -X POST \"http://localhost:5000/v1/auth/login\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"email\":\"user.mvl0yzuv181974@example.com\",\"password\":\"Secret@123\",\"deviceId\":\"pixel-7\"}'",
+  "testing": {
+    "testedBy": [
+      "auth.test.js",
+      "security.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "401 INVALID_CREDENTIALS",
+      "403 PHONE_NOT_VERIFIED",
+      "423 ACCOUNT_LOCKED",
+      "422 VALIDATION_FAILED"
+    ],
+    "passed": true
+  }
+}

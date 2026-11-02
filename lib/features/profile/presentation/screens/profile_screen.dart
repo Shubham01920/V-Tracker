@@ -125,6 +125,20 @@ class ProfileScreen extends StatelessWidget {
               },
             ),
             _buildMenuItem(
+              icon: Icons.toll_outlined,
+              title: 'FASTag Balance & Recharge',
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.fasttagCheck);
+              },
+            ),
+            _buildMenuItem(
+              icon: Icons.verified_user_outlined,
+              title: 'Verified Documents',
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.verifiedDocuments);
+              },
+            ),
+            _buildMenuItem(
               icon: Icons.shopping_bag_outlined,
               title: AppStrings.menuMyOrders,
               onTap: () {
@@ -136,6 +150,13 @@ class ProfileScreen extends StatelessWidget {
               title: AppStrings.menuAddressBook,
               onTap: () {
                 Navigator.pushNamed(context, AppRoutes.addressBook);
+              },
+            ),
+            _buildMenuItem(
+              icon: Icons.account_balance_outlined,
+              title: AppStrings.drawerBankDetails,
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.bankDetails);
               },
             ),
             // _buildMenuItem(

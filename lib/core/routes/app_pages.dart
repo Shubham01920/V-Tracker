@@ -11,6 +11,11 @@ import 'package:snap_q/features/shop/presentation/widgets/checkout_screen.dart';
 import 'package:snap_q/features/shop/presentation/screens/cart_screen.dart';
 import 'package:snap_q/features/referral/presentation/screens/scratch_card_screen.dart';
 import 'package:snap_q/features/referral/presentation/screens/referral_screen.dart';
+import 'package:snap_q/features/referral/presentation/screens/direct_referral_screen.dart';
+import 'package:snap_q/features/referral/presentation/screens/your_performance_screen.dart';
+import 'package:snap_q/features/referral/presentation/screens/team_performance_screen.dart';
+import 'package:snap_q/features/referral/presentation/screens/payout_history_screen.dart';
+import 'package:snap_q/features/referral/presentation/screens/payouts_by_teams_screen.dart';
 import 'package:snap_q/features/qr/presentation/screens/qr_tab_screen.dart';
 import 'package:snap_q/features/qr/presentation/screens/qr_scanner_screen.dart';
 import 'package:snap_q/features/profile/presentation/screens/profile_screen.dart';
@@ -26,6 +31,13 @@ import 'package:snap_q/features/calls/presentation/screens/call_history_screen.d
 import 'package:snap_q/features/profile/presentation/screens/address_book_screen.dart';
 import 'package:snap_q/features/profile/presentation/screens/edit_profile_screen.dart';
 import 'package:snap_q/features/profile/presentation/screens/track_order_screen.dart';
+import 'package:snap_q/features/profile/presentation/screens/bank_details_screen.dart';
+import 'package:snap_q/features/withdraw/presentation/screens/withdraw_screen.dart';
+import 'package:snap_q/features/withdraw/presentation/screens/withdraw_history_screen.dart';
+import 'package:snap_q/features/fasttag/presentation/screens/fasttag_check_screen.dart';
+import 'package:snap_q/features/fasttag/presentation/screens/fasttag_recharge_screen.dart';
+import 'package:snap_q/features/fasttag/presentation/screens/verified_documents_screen.dart';
+import 'package:snap_q/features/more/presentation/screens/more_screen.dart';
 
 class AppPages {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
@@ -99,6 +111,34 @@ class AppPages {
         return MaterialPageRoute(settings: settings, builder: (_) => const EditProfileScreen());
       case AppRoutes.trackOrder:
         return MaterialPageRoute(settings: settings, builder: (_) => const TrackOrderScreen());
+      case AppRoutes.bankDetails:
+        return MaterialPageRoute(settings: settings, builder: (_) => const BankDetailsScreen());
+      case AppRoutes.withdraw:
+        return MaterialPageRoute(settings: settings, builder: (_) => const WithdrawScreen());
+      case AppRoutes.withdrawHistory:
+        return MaterialPageRoute(settings: settings, builder: (_) => const WithdrawHistoryScreen());
+      case AppRoutes.directReferral:
+        return MaterialPageRoute(settings: settings, builder: (_) => const DirectReferralScreen());
+      case AppRoutes.yourPerformance:
+        return MaterialPageRoute(settings: settings, builder: (_) => const YourPerformanceScreen());
+      case AppRoutes.teamPerformance:
+        return MaterialPageRoute(settings: settings, builder: (_) => const TeamPerformanceScreen());
+      case AppRoutes.payoutHistory:
+        return MaterialPageRoute(settings: settings, builder: (_) => const PayoutHistoryScreen());
+      case AppRoutes.payoutsByTeams:
+        return MaterialPageRoute(settings: settings, builder: (_) => const PayoutsByTeamsScreen());
+      case AppRoutes.fasttagCheck:
+        return MaterialPageRoute(settings: settings, builder: (_) => const FasttagCheckScreen());
+      case AppRoutes.fasttagRecharge:
+        final args = settings.arguments as Map<String, dynamic>?;
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => FasttagRechargeScreen(arguments: args),
+        );
+      case AppRoutes.verifiedDocuments:
+        return MaterialPageRoute(settings: settings, builder: (_) => const VerifiedDocumentsScreen());
+      case AppRoutes.more:
+        return MaterialPageRoute(settings: settings, builder: (_) => const MoreScreen());
       default:
         return null;
     }

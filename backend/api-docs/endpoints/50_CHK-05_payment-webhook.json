@@ -1,0 +1,124 @@
+{
+  "id": "CHK-05",
+  "name": "Payment webhook",
+  "group": "Checkout and payments",
+  "method": "POST",
+  "path": "/v1/webhooks/payment",
+  "url": "{{baseUrl}}/v1/webhooks/payment",
+  "auth": "HMAC",
+  "webhook": true,
+  "calledBy": [
+    "(provider)"
+  ],
+  "purpose": "Gateway events: payment.captured -> order PAID (labels generated, cart cleared, shipment created); payment.failed; refund.processed. Also settles FASTag recharges.",
+  "request": {
+    "headers": {
+      "Content-Type": "application/json",
+      "X-Timestamp": "<unix seconds>",
+      "X-Signature": "<hex HMAC-SHA256 of \"<X-Timestamp>.<raw body>\" with WEBHOOK_SECRET_<PROVIDER>>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "eventId": "string | required",
+      "event": "payment.captured|payment.failed|refund.processed",
+      "gatewayOrderId": "string | required",
+      "gatewayPaymentId": "string",
+      "amountPaise": "integer | checked against the order"
+    },
+    "example": {
+      "url": "/v1/webhooks/payment",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "eventId": "evt_55482a54-9b1b-4113-b5c8-6187432ddeb0",
+        "event": "payment.captured",
+        "gatewayOrderId": "order_sHdXchFMzpnVog",
+        "gatewayPaymentId": "pay_zfzDh4rumpOw5A",
+        "amountPaise": 123882
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "received": true,
+          "duplicate": false,
+          "orderId": "6adb65978277ffe581841470",
+          "status": "PAID"
+        },
+        "requestId": "e683a67b-735c-4ce8-bfb8-fc1b0e58b89c"
+      }
+    },
+    "errors": [
+      {
+        "code": "SIGNATURE_INVALID",
+        "status": 401,
+        "example": {
+          "error": {
+            "code": "SIGNATURE_INVALID",
+            "message": "Missing signature, timestamp or body"
+          },
+          "requestId": "ed251885-7d56-4505-9105-f2e8a2f1e754"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "VALIDATION_FAILED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "VALIDATION_FAILED",
+            "message": "Please check the highlighted fields.",
+            "details": [
+              {
+                "field": "event",
+                "issue": "any.only",
+                "message": "event must be one of [payment.captured, payment.failed, refund.processed]"
+              },
+              {
+                "field": "gatewayOrderId",
+                "issue": "any.required",
+                "message": "gatewayOrderId is required"
+              }
+            ]
+          },
+          "requestId": "c25fbe96-cc05-46cc-80c1-b1421ab698ba"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/webhooks/payment\" \\\n  -H \"X-Timestamp: $TS\" -H \"X-Signature: $SIG\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"eventId\":\"evt_55482a54-9b1b-4113-b5c8-6187432ddeb0\",\"event\":\"payment.captured\",\"gatewayOrderId\":\"order_sHdXchFMzpnVog\",\"gatewayPaymentId\":\"pay_zfzDh4rumpOw5A\",\"amountPaise\":123882}'",
+  "testing": {
+    "testedBy": [
+      "content.test.js",
+      "errors.test.js",
+      "fastag.test.js",
+      "notification.test.js",
+      "ratelimit.test.js",
+      "referral.test.js",
+      "security.test.js",
+      "shop.test.js",
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "401 SIGNATURE_INVALID",
+      "422 VALIDATION_FAILED"
+    ],
+    "passed": true
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "id": "FST-03",
+  "name": "Toll transactions",
+  "group": "FASTag",
+  "method": "GET",
+  "path": "/v1/fastag/vehicles/{vehicle}/transactions",
+  "url": "{{baseUrl}}/v1/fastag/vehicles/{vehicle}/transactions",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "FASTag Balance"
+  ],
+  "purpose": "Recent toll passages and recharges.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "vehicle": "string | required"
+    },
+    "query": {
+      "page": "integer | optional | default 1",
+      "limit": "integer | optional | default 20, max 100"
+    },
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/fastag/vehicles/KA17SP7360/transactions",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "items": [
+            {
+              "id": "6adb65a1f2e34c1ceef576f2",
+              "plaza": "Panthangi Toll",
+              "location": "Nalgonda, TS",
+              "amountPaise": 11000,
+              "at": "2026-10-21T13:48:17.137Z",
+              "kind": "TOLL"
+            },
+            {
+              "id": "6adb65a1f2e34c1ceef576f3",
+              "plaza": "Electronic City Toll",
+              "location": "Bengaluru, KA",
+              "amountPaise": 11000,
+              "at": "2026-10-19T13:48:17.137Z",
+              "kind": "TOLL"
+            },
+            {
+              "id": "6adb65a1f2e34c1ceef576f4",
+              "plaza": "Nelamangala Toll",
+              "location": "Bengaluru Rural, KA",
+              "amountPaise": 8500,
+              "at": "2026-10-17T13:48:17.137Z",
+              "kind": "TOLL"
+            }
+          ]
+        },
+        "meta": {
+          "page": 1,
+          "limit": 20,
+          "total": 3,
+          "hasMore": false
+        },
+        "requestId": "40bb1334-0312-4cd0-96c8-d6564b8903dc"
+      }
+    },
+    "errors": [
+      {
+        "code": "VEHICLE_NOT_OWNED",
+        "status": 403,
+        "example": {
+          "error": {
+            "code": "VEHICLE_NOT_OWNED",
+            "message": "Add this vehicle to My Vehicles to check its FASTag"
+          },
+          "requestId": "87c8841d-1ed0-41f6-88d6-13df3e8d3593"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/fastag/vehicles/KA17SP7360/transactions\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "fastag.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "403 VEHICLE_NOT_OWNED"
+    ],
+    "passed": true
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "id": "CAL-01",
+  "name": "Call history",
+  "group": "Calls, notifications and devices",
+  "method": "GET",
+  "path": "/v1/calls",
+  "url": "{{baseUrl}}/v1/calls",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Call History"
+  ],
+  "purpose": "Contacts received (calls and alerts). Never contains the caller's number.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {
+      "type": "ALL|EMERGENCY|MISSED | optional",
+      "page": "integer | optional | default 1",
+      "limit": "integer | optional | default 20, max 100"
+    },
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/calls",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "items": [
+            {
+              "id": "6adb659e383482f27c0823a5",
+              "kind": "CALL",
+              "outcome": "PENDING",
+              "reason": "OTHER",
+              "reasonLabel": "Someone is trying to reach you",
+              "note": null,
+              "channel": "APP",
+              "durationSec": 0,
+              "at": "2026-10-23T13:48:14.147Z",
+              "vehicle": {
+                "id": "6adb659d383482f27c08239a",
+                "registrationNumber": "KA17SP6018",
+                "type": "FOUR_WHEELER",
+                "model": "Hyundai Creta"
+              }
+            },
+            {
+              "id": "6adb659e383482f27c0823a3",
+              "kind": "CALL",
+              "outcome": "PENDING",
+              "reason": "OTHER",
+              "reasonLabel": "Someone is trying to reach you",
+              "note": null,
+              "channel": "APP",
+              "durationSec": 0,
+              "at": "2026-10-23T13:48:14.124Z",
+              "vehicle": {
+                "id": "6adb659d383482f27c08239a",
+                "registrationNumber": "KA17SP6018",
+                "type": "FOUR_WHEELER",
+                "model": "Hyundai Creta"
+              }
+            },
+            {
+              "id": "6adb659e383482f27c0823a1",
+              "kind": "CALL",
+              "outcome": "PENDING",
+              "reason": "OTHER",
+              "reasonLabel": "Someone is trying to reach you",
+              "note": null,
+              "channel": "APP",
+              "durationSec": 0,
+              "at": "2026-10-23T13:48:14.096Z",
+              "vehicle": {
+                "id": "6adb659d383482f27c08239a",
+                "registrationNumber": "KA17SP6018",
+                "type": "FOUR_WHEELER",
+                "model": "Hyundai Creta"
+              }
+            }
+          ]
+        },
+        "meta": {
+          "page": 1,
+          "limit": 20,
+          "total": 3,
+          "hasMore": false
+        },
+        "requestId": "a302cf94-aa7e-4b8f-8b95-e1a2194a6898"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/calls\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "errors.test.js",
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

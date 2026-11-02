@@ -1,0 +1,125 @@
+{
+  "id": "CON-01",
+  "name": "Call owner (app)",
+  "group": "Vehicles, QR, contacts and public scan",
+  "method": "POST",
+  "path": "/v1/contacts/call",
+  "url": "{{baseUrl}}/v1/contacts/call",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Vehicle Search",
+    "Scan tab"
+  ],
+  "purpose": "Start a masked bridged call to the owner of vehicleRef.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "vehicleRef": "string | required | from VEH-05 / QR-01",
+      "reason": "BLOCKING_ROAD|LIGHTS_ON|DOORS_OPEN|TOWING|EMERGENCY|OTHER | optional"
+    },
+    "example": {
+      "url": "/v1/contacts/call",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "vehicleRef": "vr_mrNXceC68UphAzXA",
+        "reason": "OTHER"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 202,
+      "example": {
+        "data": {
+          "sessionId": "cs_K9JDzl3kHUK1Qyic",
+          "status": "RINGING",
+          "virtualNumber": "+918000000000",
+          "contactId": "6adb659e383482f27c0823a1"
+        },
+        "requestId": "2e8dfa10-8fc2-4ff6-84a0-df208f4cb24d"
+      }
+    },
+    "errors": [
+      {
+        "code": "CONTACT_BLOCKED",
+        "status": 403,
+        "example": {
+          "error": {
+            "code": "CONTACT_BLOCKED",
+            "message": "The owner is not accepting contact from you"
+          },
+          "requestId": "d4fe0da2-7097-41f1-95a7-e3f603623635"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "OWNER_UNAVAILABLE",
+        "status": 409,
+        "example": {
+          "error": {
+            "code": "OWNER_UNAVAILABLE",
+            "message": "The owner cannot be reached right now. Try sending an alert."
+          },
+          "requestId": "aa5f26fb-ad32-4778-90ed-a25b7a022307"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "RATE_LIMITED",
+        "status": 429,
+        "example": {
+          "error": {
+            "code": "RATE_LIMITED",
+            "message": "Too many attempts for this vehicle. Please try again later."
+          },
+          "requestId": "4d30588c-8a95-4b92-8c27-50caa088b788"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "CANNOT_CONTACT_SELF",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "CANNOT_CONTACT_SELF",
+            "message": "This is your own vehicle"
+          },
+          "requestId": "5412bb6f-59b8-46a0-b4c3-c0f6da8af78a"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/contacts/call\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"vehicleRef\":\"vr_mrNXceC68UphAzXA\",\"reason\":\"OTHER\"}'",
+  "testing": {
+    "testedBy": [
+      "errors.test.js",
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "202 OK",
+      "429 RATE_LIMITED",
+      "409 OWNER_UNAVAILABLE",
+      "422 CANNOT_CONTACT_SELF",
+      "403 CONTACT_BLOCKED"
+    ],
+    "passed": true
+  }
+}

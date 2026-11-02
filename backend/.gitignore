@@ -1,0 +1,13 @@
+node_modules/
+.env
+logs/*
+!logs/.gitkeep
+uploads/avatars/*
+uploads/documents/*
+uploads/exports/*
+!uploads/**/.gitkeep
+tests/.artifacts/
+public/products/
+coverage/
+.DS_Store
+npm-debug.log*

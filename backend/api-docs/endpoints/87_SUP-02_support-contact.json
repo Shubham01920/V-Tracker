@@ -1,0 +1,58 @@
+{
+  "id": "SUP-02",
+  "name": "Support contact",
+  "group": "Content, support, config and lookups",
+  "method": "GET",
+  "path": "/v1/support/contact",
+  "url": "{{baseUrl}}/v1/support/contact",
+  "auth": "None",
+  "webhook": false,
+  "calledBy": [
+    "Help and Support"
+  ],
+  "purpose": "Support e-mail, phone, hours.",
+  "request": {
+    "headers": {
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/support/contact",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "email": "support@vtracker.example",
+          "phone": "+91 80000 00000",
+          "hours": "Mon-Sat, 9:00 AM - 7:00 PM IST"
+        },
+        "requestId": "32d25426-beff-4331-9220-d0302bcd6bcb"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/support/contact\"",
+  "testing": {
+    "testedBy": [
+      "content.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

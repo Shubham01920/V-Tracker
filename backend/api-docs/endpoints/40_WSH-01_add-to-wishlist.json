@@ -1,0 +1,71 @@
+{
+  "id": "WSH-01",
+  "name": "Add to wishlist",
+  "group": "Catalogue, wishlist and cart",
+  "method": "PUT",
+  "path": "/v1/wishlist/{productId}",
+  "url": "{{baseUrl}}/v1/wishlist/{productId}",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Shop",
+    "Product Detail"
+  ],
+  "purpose": "Idempotent add.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "productId": "string | required"
+    },
+    "query": {},
+    "bodyType": "application/json",
+    "body": {},
+    "example": {
+      "url": "/v1/wishlist/6adb65b0cf39e842d2178543",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 204,
+      "example": null
+    },
+    "errors": [
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "Product not found"
+          },
+          "requestId": "534aa0a1-db51-49ef-87ca-bb002f7b4802"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X PUT \"http://localhost:5000/v1/wishlist/6adb65b0cf39e842d2178543\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "shop.test.js"
+    ],
+    "statusesSeenInTests": [
+      "204 OK",
+      "404 NOT_FOUND"
+    ],
+    "passed": true
+  }
+}

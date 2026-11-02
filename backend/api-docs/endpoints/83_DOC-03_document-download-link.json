@@ -1,0 +1,75 @@
+{
+  "id": "DOC-03",
+  "name": "Document download link",
+  "group": "Documents",
+  "method": "GET",
+  "path": "/v1/documents/{id}/download-url",
+  "url": "{{baseUrl}}/v1/documents/{id}/download-url",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Verified Documents"
+  ],
+  "purpose": "Signed link valid 5 minutes.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "id": "string | required"
+    },
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/documents/6adb659abe27f7c9498867e2/download-url",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "url": "http://localhost:5000/v1/files/<signed-token>",
+          "expiresAt": "2026-10-23T13:53:10.000Z"
+        },
+        "requestId": "9ab289b1-80ab-4c6a-a79d-b2040034612d"
+      }
+    },
+    "errors": [
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "Document not found"
+          },
+          "requestId": "02abae81-6f56-4ba2-9a7d-59467c31c7c4"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/documents/6adb659abe27f7c9498867e2/download-url\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "document.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "404 NOT_FOUND"
+    ],
+    "passed": true
+  }
+}

@@ -1,7 +1,8 @@
-// import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:snap_q/core/constants/app_colors.dart';
+import 'package:snap_q/core/routes/app_routes.dart';
+import 'package:snap_q/core/widgets/drawer/vt_drawer.dart';
 import 'package:snap_q/features/calls/presentation/screens/call_history_screen.dart';
 import 'package:snap_q/features/home/presentation/screens/home_screen.dart';
 import 'package:snap_q/features/profile/presentation/screens/profile_screen.dart';
@@ -50,6 +51,49 @@ class _MainScreenState extends State<NavigationScreen> {
     return Scaffold(
       backgroundColor: AppColors.bg,
       extendBody: true,
+      drawer: VTDrawer(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: (index) {
+          Navigator.pop(context);
+          switch (index) {
+            case 0:
+              setState(() {
+                _selectedIndex = index;
+              });
+              if (_pageController.hasClients) {
+                _pageController.jumpToPage(0);
+              }
+              break;
+            case 1:
+              Navigator.pushNamed(context, AppRoutes.shop);
+              break;
+            case 2:
+              Navigator.pushNamed(context, AppRoutes.myOrders);
+              break;
+            case 3:
+              Navigator.pushNamed(context, AppRoutes.trackOrder);
+              break;
+            case 4:
+              Navigator.pushNamed(context, AppRoutes.referral);
+              break;
+            case 5:
+              Navigator.pushNamed(context, AppRoutes.scratchCard);
+              break;
+            case 6:
+              Navigator.pushNamed(context, AppRoutes.about);
+              break;
+            case 7:
+              Navigator.pushNamed(context, AppRoutes.privacyPolicy);
+              break;
+            case 8:
+              Navigator.pushNamed(context, AppRoutes.termsAndConditions);
+              break;
+            case 9:
+              Navigator.pushNamed(context, AppRoutes.helpAndSupport);
+              break;
+          }
+        },
+      ),
       
       // PageView - isse horizontal swiping aur smooth animated switching page level pe milti hai
       body: SafeArea(

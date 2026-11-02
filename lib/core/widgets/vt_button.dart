@@ -39,7 +39,7 @@ class VTButton extends StatelessWidget {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor ?? AppColors.gold,
-          foregroundColor: textColor ?? AppColors.primaryNavy,
+          foregroundColor: textColor ?? AppColors.white,
           padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
           disabledBackgroundColor:
               (backgroundColor ?? AppColors.gold).withValues(alpha: 0.5),
@@ -57,20 +57,20 @@ class VTButton extends StatelessWidget {
                 child: CircularProgressIndicator(
                   strokeWidth: 2.5,
                   valueColor:
-                      AlwaysStoppedAnimation<Color>(AppColors.primaryNavy),
+                      AlwaysStoppedAnimation<Color>(AppColors.white),
                 ),
               )
             : Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (icon != null) ...[
-                    Icon(icon, size: 22, color: textColor ?? AppColors.primaryNavy),
+                    Icon(icon, size: 22, color: textColor ?? AppColors.white),
                     const SizedBox(width: 10),
                   ],
                   Text(
                     text,
                     style: AppTextStyles.labelLarge(
-                      color: textColor ?? AppColors.primaryNavy,
+                      color: textColor ?? AppColors.white,
                       fontSize: fontSize ?? 17,
                     ),
                   ),

@@ -1,0 +1,101 @@
+{
+  "id": "SHP-02",
+  "name": "Product detail",
+  "group": "Catalogue, wishlist and cart",
+  "method": "GET",
+  "path": "/v1/products/{id}",
+  "url": "{{baseUrl}}/v1/products/{id}",
+  "auth": "Optional",
+  "webhook": false,
+  "calledBy": [
+    "Product Detail"
+  ],
+  "purpose": "Gallery, features, rating and review count.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken> (optional)",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "id": "string | required"
+    },
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/products/6adb65b0cf39e842d2178543",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "id": "6adb65b0cf39e842d2178543",
+          "slug": "four-wheeler-qr-label",
+          "title": "4 Wheeler QR Label",
+          "subtitle": "Perfect for Cars & SUVs",
+          "category": "FOUR_WHEELER",
+          "pricePaise": 99900,
+          "mrpPaise": 149900,
+          "taxRatePercent": 18,
+          "currency": "INR",
+          "priceNote": "Excl. 18% GST",
+          "rating": 4.9,
+          "ratingCount": 1200,
+          "imageUrl": "http://localhost:5000/static/products/four-wheeler.svg",
+          "inStock": true,
+          "stock": 5000,
+          "wishlisted": false,
+          "description": "Windshield-friendly QR label for cars and SUVs. Bystanders can call or alert you privately when your car blocks a road or needs attention.",
+          "gallery": [
+            "http://localhost:5000/static/products/four-wheeler.svg",
+            "http://localhost:5000/static/products/label-closeup.svg",
+            "http://localhost:5000/static/products/windshield.svg"
+          ],
+          "features": [
+            "Instant contact without sharing your number",
+            "Inside-windshield mounting, glare-free",
+            "Works with any phone camera - no app needed"
+          ],
+          "labelsIncluded": 1
+        },
+        "requestId": "11f71850-ff35-4307-8fad-640f8819d845"
+      }
+    },
+    "errors": [
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "Product not found"
+          },
+          "requestId": "75420d10-5a86-41e3-bf5f-d4601d5fb94f"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/products/6adb65b0cf39e842d2178543\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "shop.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "404 NOT_FOUND"
+    ],
+    "passed": true
+  }
+}

@@ -49,6 +49,10 @@ class AppStrings {
   static const String quickActionMyOrders = 'My Orders';
   static const String quickActionReferral = 'Referral';
   static const String quickActionRewards = 'Rewards';
+  static const String quickActionFasttag = 'FASTag';
+  static const String quickActionVerifiedDocs = 'Documents';
+  static const String quickActionBankDetails = 'Bank Details';
+  static const String quickActionWithdraw = 'Withdraw';
   static const String referAndEarnTitle = 'Refer & Earn';
   static const String referAndEarnSubtitle = 'Invite friends and earn exciting';
   static const String inviteNowBtn = 'Invite Now';
@@ -57,16 +61,37 @@ class AppStrings {
   static const String drawerUserName = 'yOYO';
   static const String drawerUserPhone = '9158523541';
   static const String drawerHome = 'Home';
+  static const String drawerOrders = 'Orders';
   static const String drawerShopNow = 'Shop Now';
+  static const String drawerMyProfile = 'My Profile';
+  static const String drawerProfileSub = 'Profile';
+  static const String drawerBankDetails = 'Bank Details';
+  static const String drawerUploadProfileImage = 'Upload Profile Image';
   static const String drawerMyOrders = 'My Orders';
   static const String drawerTrackOrder = 'Track Order';
+  static const String drawerMyTeam = 'My Team';
+  static const String drawerDirectReferral = 'Direct Referral';
+  static const String drawerYourPerformance = 'Your Performance';
+  static const String drawerTeamPerformance = 'Team Performance';
+  static const String drawerPayoutHistory = 'Payout History';
+  static const String drawerPayoutsByTeams = 'Payouts by Teams';
   static const String drawerReferAndEarn = 'Refer & Earn';
   static const String drawerRewards = 'Rewards';
+  static const String drawerCashbackRewards = 'Cashback Rewards';
+  static const String drawerRewardsHistory = 'Rewards History';
+  static const String drawerCouponHistory = 'Coupon History';
+  static const String drawerWithdraw = 'Withdraw';
+  static const String drawerWithdrawHistory = 'Withdraw History';
   static const String drawerAboutUs = 'About Us';
   static const String drawerPrivacyPolicy = 'Privacy Policy';
   static const String drawerTermsAndConditions = 'Terms & Conditions';
   static const String drawerHelpAndSupport = 'Help & Support';
+  static const String drawerNoticeAndUpdate = 'Notice & Update';
+  static const String drawerSupportInbox = 'Support Inbox';
+  static const String drawerWhatsappSupport = 'WhatsApp Support';
+  static const String drawerLogout = 'Logout';
   static const String drawerReferAndEarnSubtitle = 'Invite friends and\nearn exciting rewards';
+  static const String appVersion = 'Version 1.0.0';
   static const String searchProductsHint = 'Search products';
 
   // Shop Screen Products
@@ -89,6 +114,11 @@ class AppStrings {
   static const String shopProductCommercialSubtitle = 'Perfect for Trucks & Vans';
   static const String shopProductCommercialPrice = '₹1,299';
   static const String shopProductCommercialCategory = 'Commercial';
+
+  static const String shopProductPackageTitle = 'Special Package Offer';
+  static const String shopProductPackageSubtitle = 'V TRACKER Income plan (Excl. 18% GST)';
+  static const String shopProductPackagePrice = '₹5,999';
+  static const String shopProductPackageCategory = 'Special Package';
 
   // Shop Screen Categories
   static const String shopCategoryAll = 'All';

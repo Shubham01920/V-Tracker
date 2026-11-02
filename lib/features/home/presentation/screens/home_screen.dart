@@ -3,9 +3,10 @@ import 'package:snap_q/core/constants/app_colors.dart';
 import 'package:snap_q/core/constants/app_strings.dart';
 import 'package:snap_q/core/constants/app_text_styles.dart';
 import 'package:snap_q/core/widgets/app_bar/vt_app_bar.dart';
-import 'package:snap_q/core/widgets/vt_drawer.dart';
 import 'package:snap_q/core/widgets/vt_search_bar.dart';
 import 'package:snap_q/core/routes/app_routes.dart';
+import 'package:snap_q/features/home/presentation/widgets/home_banner_carousel.dart';
+import 'package:snap_q/features/home/presentation/widgets/home_overview_section.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,52 +16,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.bg,
-      drawer: VTDrawer(
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: (index) {
-          Navigator.pop(context); // close drawer
-          switch (index) {
-            case 0:
-              setState(() {
-                _selectedIndex = index;
-              });
-              break;
-            case 1:
-              Navigator.pushNamed(context, AppRoutes.shop);
-              break;
-            case 2:
-              Navigator.pushNamed(context, AppRoutes.myOrders);
-              break;
-            case 3:
-              Navigator.pushNamed(context, AppRoutes.trackOrder);
-              break;
-            case 4:
-              Navigator.pushNamed(context, AppRoutes.referral);
-              break;
-            case 5:
-              Navigator.pushNamed(context, AppRoutes.scratchCard);
-              break;
-            case 6:
-              Navigator.pushNamed(context, AppRoutes.about);
-              break;
-            case 7:
-              Navigator.pushNamed(context, AppRoutes.privacyPolicy);
-              break;
-            case 8:
-              Navigator.pushNamed(context, AppRoutes.termsAndConditions);
-              break;
-            case 9:
-              Navigator.pushNamed(context, AppRoutes.helpAndSupport);
-              break;
-          }
-        },
-      ),
       appBar: const VTAppBar(),
       body: SingleChildScrollView(
         child: Padding(
@@ -88,117 +47,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 16),
 
-              // ── Emergency QR Scan Card ──
-              Stack(
-                alignment: Alignment.centerRight,
-                children: [
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryNavy,
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Row(
-                      children: [
-                        // Text and Button Content
-                        Expanded(
-                          flex: 12,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  AppStrings.homeEmergencyTitle,
-                                  style: AppTextStyles.headlineLarge(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                RichText(
-                                  text: TextSpan(
-                                    style: AppTextStyles.bodySmall(
-                                      color: Colors.white.withValues(alpha: 0.8),
-                                      fontSize: 12,
-                                    ),
-                                    children: const [
-                                      TextSpan(text: AppStrings.homePrivateLabel),
-                                      TextSpan(
-                                        text: '• ',
-                                        style: TextStyle(
-                                          color: AppColors.gold,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: AppStrings.homeInstantContactLabel,
-                                      ),
-                                      TextSpan(
-                                        text: AppStrings.homeNoAppsRequiredLabel,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 14),
-                                InkWell(
-                                  onTap: () {},
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 18,
-                                      vertical: 10,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.gold,
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          AppStrings.scanQrBtn,
-                                          style: AppTextStyles.labelLarge(
-                                            color: AppColors.primaryNavy,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        const Icon(
-                                          Icons.arrow_forward_rounded,
-                                          color: AppColors.primaryNavy,
-                                          size: 16,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        // Spacer to prevent text overlap with the positioned image on the right
-                        const Expanded(
-                          flex: 7,
-                          child: SizedBox(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Positioned Image that doesn't affect container height
-                  Positioned(
-                  right: -15,
-                    child: Image.asset(
-                      'assets/images/qr_phone_hand.png',
-                      fit: BoxFit.contain,
-                      height: 180, // Image height can now be changed freely
-                    ),
-                  ),
-                ],
-              ),
+              // ── Emergency QR Scan Carousel ──
+              const HomeBannerCarousel(),
               const SizedBox(height: 20),
 
               // ── Search Vehicle Card ──
@@ -251,7 +101,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
+               const HomeOverviewSection(),
+              const SizedBox(height: 20),
 
               // ── Quick Actions Section ──
               Text(
@@ -263,6 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 12),
+              // Row 1
               Row(
                 children: [
                   _buildQuickActionCard(
@@ -310,9 +163,64 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 8),
+              // Row 2
+              Row(
+                children: [
+                  _buildQuickActionCard(
+                    icon: const Icon(
+                      Icons.toll_outlined,
+                      color: AppColors.info,
+                      size: 24,
+                    ),
+                    label: AppStrings.quickActionFasttag,
+                    onTap: () {
+                      Navigator.pushNamed(context, AppRoutes.fasttagCheck);
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                  _buildQuickActionCard(
+                    icon: const Icon(
+                      Icons.verified_outlined,
+                      color: AppColors.successText,
+                      size: 24,
+                    ),
+                    label: AppStrings.quickActionVerifiedDocs,
+                    onTap: () {
+                      Navigator.pushNamed(context, AppRoutes.verifiedDocuments);
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                  _buildQuickActionCard(
+                    icon: const Icon(
+                      Icons.account_balance_outlined,
+                      color: AppColors.primaryNavy,
+                      size: 24,
+                    ),
+                    label: AppStrings.quickActionBankDetails,
+                    onTap: () {
+                      Navigator.pushNamed(context, AppRoutes.bankDetails);
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                  _buildQuickActionCard(
+                    icon: const Icon(
+                      Icons.account_balance_wallet_outlined,
+                      color: AppColors.gold,
+                      size: 24,
+                    ),
+                    label: AppStrings.quickActionWithdraw,
+                    onTap: () {
+                      Navigator.pushNamed(context, AppRoutes.withdraw);
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
 
-                            InkWell(
+            
+
+              InkWell(
                 onTap: () => Navigator.pushNamed(context, AppRoutes.referral),
                 child: Stack(
                   alignment: Alignment.centerRight,
@@ -397,7 +305,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 100),
             ],
           ),
         ),

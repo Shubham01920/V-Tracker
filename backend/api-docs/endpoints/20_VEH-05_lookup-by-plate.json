@@ -1,0 +1,94 @@
+{
+  "id": "VEH-05",
+  "name": "Lookup by plate",
+  "group": "Vehicles, QR, contacts and public scan",
+  "method": "GET",
+  "path": "/v1/vehicles/lookup",
+  "url": "{{baseUrl}}/v1/vehicles/lookup",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Vehicle Search"
+  ],
+  "purpose": "Resolve a plate to a SAFE summary: masked plate, type, label active, opaque vehicleRef. Never owner name, phone, insurance or PUC.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {
+      "reg": "string | required | registration number"
+    },
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/vehicles/lookup?reg=KA17SP6018",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "vehicleRef": "vr_mrNXceC68UphAzXA",
+          "maskedPlate": "KA 17 ** 6018",
+          "type": "FOUR_WHEELER",
+          "hasActiveTag": true,
+          "isOwn": true,
+          "actions": []
+        },
+        "requestId": "cf281bca-d0df-4593-a30b-8b3ad16668e3"
+      }
+    },
+    "errors": [
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "This vehicle is not protected by V Tracker"
+          },
+          "requestId": "bde2708a-7771-4311-877b-847ce2e4435c"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "RATE_LIMITED",
+        "status": 429,
+        "example": {
+          "error": {
+            "code": "RATE_LIMITED",
+            "message": "Too many requests. Please try again later."
+          },
+          "requestId": "51ced61b-016b-433d-b2f3-5bcabb07feca"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/vehicles/lookup?reg=KA17SP6018\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "errors.test.js",
+      "ratelimit.test.js",
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "429 RATE_LIMITED",
+      "404 NOT_FOUND"
+    ],
+    "passed": true
+  }
+}

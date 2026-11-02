@@ -1,0 +1,125 @@
+{
+  "id": "QR-02",
+  "name": "Activate label",
+  "group": "Vehicles, QR, contacts and public scan",
+  "method": "POST",
+  "path": "/v1/qr/activate",
+  "url": "{{baseUrl}}/v1/qr/activate",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "QR Activation"
+  ],
+  "purpose": "Bind a SHIPPED/DELIVERED label bought by this user to one of their vehicles. Issues an activation scratch card the first time.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "qrUuid": "uuid | required",
+      "vehicleId": "string | required"
+    },
+    "example": {
+      "url": "/v1/qr/activate",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "qrUuid": "05ab32f9-1666-432d-894d-c1eddb41a42d",
+        "vehicleId": "6adb659d383482f27c08239a"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "vehicleId": "6adb659d383482f27c08239a",
+          "qrStatus": "ACTIVE",
+          "qrCode": "QR-CAR-90001",
+          "rewardId": "6adb659e383482f27c08239b"
+        },
+        "requestId": "bd00511e-56d5-4216-a3f5-84dbfbdd8cc3"
+      }
+    },
+    "errors": [
+      {
+        "code": "QR_NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "QR_NOT_FOUND",
+            "message": "This is not a V Tracker label"
+          },
+          "requestId": "8fcbbacd-0f9a-4fc7-a5da-0315e4f13a47"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "QR_ALREADY_ACTIVE",
+        "status": 409,
+        "example": {
+          "error": {
+            "code": "QR_ALREADY_ACTIVE",
+            "message": "This label is already linked to a vehicle"
+          },
+          "requestId": "075e7588-d0d6-45c2-b90a-d6c8df28b7e3"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "QR_NOT_ELIGIBLE",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "QR_NOT_ELIGIBLE",
+            "message": "This label has not been shipped yet"
+          },
+          "requestId": "7e98f65d-cf65-4ce6-b4dd-2b5fe062e85d"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "VEHICLE_HAS_QR",
+        "status": 409,
+        "example": {
+          "error": {
+            "code": "VEHICLE_HAS_QR",
+            "message": "This vehicle already has an active label. Unlink it first."
+          },
+          "requestId": "01041b3e-2463-46fd-ae54-d1fc644a57aa"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/qr/activate\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"qrUuid\":\"05ab32f9-1666-432d-894d-c1eddb41a42d\",\"vehicleId\":\"6adb659d383482f27c08239a\"}'",
+  "testing": {
+    "testedBy": [
+      "errors.test.js",
+      "ratelimit.test.js",
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "404 QR_NOT_FOUND",
+      "200 OK",
+      "422 QR_NOT_ELIGIBLE",
+      "409 QR_ALREADY_ACTIVE",
+      "409 VEHICLE_HAS_QR"
+    ],
+    "passed": true
+  }
+}

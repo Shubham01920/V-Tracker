@@ -1,0 +1,113 @@
+{
+  "id": "CAL-03",
+  "name": "Telephony webhook",
+  "group": "Calls, notifications and devices",
+  "method": "POST",
+  "path": "/v1/webhooks/telephony",
+  "url": "{{baseUrl}}/v1/webhooks/telephony",
+  "auth": "HMAC",
+  "webhook": true,
+  "calledBy": [
+    "(provider)"
+  ],
+  "purpose": "Call events from the telephony provider update call history.",
+  "request": {
+    "headers": {
+      "Content-Type": "application/json",
+      "X-Timestamp": "<unix seconds>",
+      "X-Signature": "<hex HMAC-SHA256 of \"<X-Timestamp>.<raw body>\" with WEBHOOK_SECRET_<PROVIDER>>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "eventId": "string | required | unique per event",
+      "event": "call.answered|call.completed|call.missed|call.failed",
+      "sessionId": "string | required",
+      "durationSec": "integer | optional"
+    },
+    "example": {
+      "url": "/v1/webhooks/telephony",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "eventId": "e1",
+        "event": "call.completed",
+        "sessionId": "cs_unknown"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "received": true,
+          "duplicate": false,
+          "ignored": true
+        },
+        "requestId": "8d4422b0-c58e-4a6d-8568-8d4ca456821c"
+      }
+    },
+    "errors": [
+      {
+        "code": "SIGNATURE_INVALID",
+        "status": 401,
+        "example": {
+          "error": {
+            "code": "SIGNATURE_INVALID",
+            "message": "Missing signature, timestamp or body"
+          },
+          "requestId": "7ac2317a-d459-4e53-bde0-b10a2414cb28"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "VALIDATION_FAILED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "VALIDATION_FAILED",
+            "message": "Please check the highlighted fields.",
+            "details": [
+              {
+                "field": "event",
+                "issue": "any.only",
+                "message": "event must be one of [call.answered, call.completed, call.missed, call.failed]"
+              },
+              {
+                "field": "sessionId",
+                "issue": "any.required",
+                "message": "sessionId is required"
+              }
+            ]
+          },
+          "requestId": "dffd8e83-691a-4d18-9e4b-e3a3d65551cf"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/webhooks/telephony\" \\\n  -H \"X-Timestamp: $TS\" -H \"X-Signature: $SIG\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"eventId\":\"e1\",\"event\":\"call.completed\",\"sessionId\":\"cs_unknown\"}'",
+  "testing": {
+    "testedBy": [
+      "security.test.js",
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "401 SIGNATURE_INVALID",
+      "422 VALIDATION_FAILED",
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

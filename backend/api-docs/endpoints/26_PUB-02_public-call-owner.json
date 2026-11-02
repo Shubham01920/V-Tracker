@@ -1,0 +1,126 @@
+{
+  "id": "PUB-02",
+  "name": "Public call owner",
+  "group": "Vehicles, QR, contacts and public scan",
+  "method": "POST",
+  "path": "/v1/public/scan/{qrUuid}/call",
+  "url": "{{baseUrl}}/v1/public/scan/{qrUuid}/call",
+  "auth": "None",
+  "webhook": false,
+  "calledBy": [
+    "Public scan web page"
+  ],
+  "purpose": "Bystander enters own number; a masked call is bridged.",
+  "request": {
+    "headers": {
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "qrUuid": "uuid | required"
+    },
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "callerPhone": "string | required",
+      "captchaToken": "string | required in production",
+      "reason": "enum | optional"
+    },
+    "example": {
+      "url": "/v1/public/scan/35c6d9de-b2ec-4fb1-bc15-fe4abf153df5/call",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "callerPhone": "9123456780",
+        "captchaToken": "ok",
+        "reason": "EMERGENCY"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 202,
+      "example": {
+        "data": {
+          "sessionId": "cs_ZdgytIHskTqoxR0s",
+          "status": "RINGING",
+          "virtualNumber": "+918000000000",
+          "contactId": "6adb65ba8ee1a60d3a1394d1"
+        },
+        "requestId": "b61500e0-3001-4146-ab0b-0e1fe07c3006"
+      }
+    },
+    "errors": [
+      {
+        "code": "CAPTCHA_FAILED",
+        "status": 400,
+        "example": {
+          "error": {
+            "code": "CAPTCHA_FAILED",
+            "message": "Please complete the CAPTCHA"
+          },
+          "requestId": "2a73db9a-e34d-4c3d-8f18-eff8b83fb692"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "OWNER_UNAVAILABLE",
+        "status": 409,
+        "example": {
+          "error": {
+            "code": "OWNER_UNAVAILABLE",
+            "message": "The owner cannot be reached right now. Try sending an alert."
+          },
+          "requestId": "41d97ccb-215e-48aa-836b-f27c3543b318"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "RATE_LIMITED",
+        "status": 429,
+        "example": {
+          "error": {
+            "code": "RATE_LIMITED",
+            "message": "Too many requests. Please try again later."
+          },
+          "requestId": "13448024-ca5c-48f0-a882-542a151563d4"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "QR_INACTIVE",
+        "status": 410,
+        "example": {
+          "error": {
+            "code": "QR_INACTIVE",
+            "message": "This label has not been activated yet"
+          },
+          "requestId": "bb5312bd-b941-4b44-9af7-f09d774b52db"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/public/scan/35c6d9de-b2ec-4fb1-bc15-fe4abf153df5/call\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"callerPhone\":\"9123456780\",\"captchaToken\":\"ok\",\"reason\":\"EMERGENCY\"}'",
+  "testing": {
+    "testedBy": [
+      "ratelimit.test.js",
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "429 RATE_LIMITED",
+      "400 CAPTCHA_FAILED",
+      "202 OK",
+      "410 QR_INACTIVE",
+      "409 OWNER_UNAVAILABLE"
+    ],
+    "passed": true
+  }
+}

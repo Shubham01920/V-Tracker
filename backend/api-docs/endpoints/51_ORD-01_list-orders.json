@@ -1,0 +1,81 @@
+{
+  "id": "ORD-01",
+  "name": "List orders",
+  "group": "Orders and tracking",
+  "method": "GET",
+  "path": "/v1/orders",
+  "url": "{{baseUrl}}/v1/orders",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "My Orders"
+  ],
+  "purpose": "Orders newest first with status, totals and 3-step progress.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {
+      "status": "order status | optional",
+      "page": "integer | optional | default 1",
+      "limit": "integer | optional | default 20, max 100"
+    },
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/orders",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "items": [
+            {
+              "id": "6adb65b175d71a0cb96f8358",
+              "orderNumber": "ORD-892306",
+              "placedAt": "2026-10-23T13:48:33.968Z",
+              "status": "PAID",
+              "totalPaise": 241764,
+              "currency": "INR",
+              "itemsSummary": "4 Wheeler QR Label x 2",
+              "itemCount": 2,
+              "thumbnailUrl": "http://localhost:5000/static/products/four-wheeler.svg",
+              "progressStep": 1
+            }
+          ]
+        },
+        "meta": {
+          "page": 1,
+          "limit": 20,
+          "total": 1,
+          "hasMore": false
+        },
+        "requestId": "c8d4022b-f33f-4100-94e0-12ff7f495a32"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/orders\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "shop.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

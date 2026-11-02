@@ -1,0 +1,58 @@
+{
+  "id": "NOT-04",
+  "name": "Unread count",
+  "group": "Calls, notifications and devices",
+  "method": "GET",
+  "path": "/v1/notifications/unread-count",
+  "url": "{{baseUrl}}/v1/notifications/unread-count",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Home"
+  ],
+  "purpose": "Drives the red dot on the bell.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/notifications/unread-count",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "count": 3
+        },
+        "requestId": "2ca4e27f-c6f1-40d8-ab8a-9d7cf2b24778"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/notifications/unread-count\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "notification.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

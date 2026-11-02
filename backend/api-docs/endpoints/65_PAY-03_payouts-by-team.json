@@ -1,0 +1,96 @@
+{
+  "id": "PAY-03",
+  "name": "Payouts by team",
+  "group": "Rewards, referral and payouts",
+  "method": "GET",
+  "path": "/v1/payouts/by-team",
+  "url": "{{baseUrl}}/v1/payouts/by-team",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Payouts by Teams"
+  ],
+  "purpose": "Per level: total, credited, pending, count, share and average.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/payouts/by-team",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "overall": {
+            "totalPaise": 6000,
+            "creditedPaise": 0,
+            "pendingPaise": 6000,
+            "count": 2,
+            "activeTeams": 2
+          },
+          "teams": [
+            {
+              "level": 1,
+              "team": "Team 1",
+              "totalPaise": 5000,
+              "creditedPaise": 0,
+              "pendingPaise": 5000,
+              "count": 1,
+              "sharePercent": 83.3,
+              "avgPaise": 5000
+            },
+            {
+              "level": 2,
+              "team": "Team 2",
+              "totalPaise": 1000,
+              "creditedPaise": 0,
+              "pendingPaise": 1000,
+              "count": 1,
+              "sharePercent": 16.7,
+              "avgPaise": 1000
+            },
+            {
+              "level": 3,
+              "team": "Team 3",
+              "totalPaise": 0,
+              "creditedPaise": 0,
+              "pendingPaise": 0,
+              "count": 0,
+              "sharePercent": 0,
+              "avgPaise": 0
+            }
+          ]
+        },
+        "requestId": "68eb2263-48eb-4312-9009-24a05d992191"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/payouts/by-team\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "referral.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

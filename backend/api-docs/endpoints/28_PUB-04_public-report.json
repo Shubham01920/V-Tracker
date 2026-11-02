@@ -1,0 +1,95 @@
+{
+  "id": "PUB-04",
+  "name": "Public report",
+  "group": "Vehicles, QR, contacts and public scan",
+  "method": "POST",
+  "path": "/v1/public/scan/{qrUuid}/report",
+  "url": "{{baseUrl}}/v1/public/scan/{qrUuid}/report",
+  "auth": "None",
+  "webhook": false,
+  "calledBy": [
+    "Public scan web page"
+  ],
+  "purpose": "Report misuse or a damaged label.",
+  "request": {
+    "headers": {
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "qrUuid": "uuid | required"
+    },
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "kind": "LABEL_DAMAGED|MISUSE|OTHER | required",
+      "note": "string | optional"
+    },
+    "example": {
+      "url": "/v1/public/scan/944ffafe-d15f-418b-af4e-d0b4ce68f08d/report",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "kind": "OTHER"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 202,
+      "example": {
+        "data": {
+          "reportId": "6adb65a75a24d7fd54de2c04"
+        },
+        "requestId": "e1900154-dba3-4a2c-ba24-1430f9825c02"
+      }
+    },
+    "errors": [
+      {
+        "code": "RATE_LIMITED",
+        "status": 429,
+        "example": {
+          "error": {
+            "code": "RATE_LIMITED",
+            "message": "Too many requests. Please try again later."
+          },
+          "requestId": "5338edda-9aa3-468a-8967-1968aefdd556"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "QR_NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "QR_NOT_FOUND",
+            "message": "This is not a V Tracker label"
+          },
+          "requestId": "a9f13b4e-a4d0-45b5-a89f-ef9389bf455a"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/public/scan/944ffafe-d15f-418b-af4e-d0b4ce68f08d/report\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"kind\":\"OTHER\"}'",
+  "testing": {
+    "testedBy": [
+      "errors.test.js",
+      "ratelimit.test.js",
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "404 QR_NOT_FOUND",
+      "202 OK",
+      "429 RATE_LIMITED"
+    ],
+    "passed": true
+  }
+}

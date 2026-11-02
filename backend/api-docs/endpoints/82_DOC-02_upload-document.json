@@ -1,0 +1,143 @@
+{
+  "id": "DOC-02",
+  "name": "Upload document",
+  "group": "Documents",
+  "method": "POST",
+  "path": "/v1/documents",
+  "url": "{{baseUrl}}/v1/documents",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Verified Documents"
+  ],
+  "purpose": "Upload (pdf/jpeg/png, max 10 MB). Stored encrypted; queued for admin review.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "multipart/form-data",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "multipart/form-data",
+    "body": {
+      "file": "file | required",
+      "type": "enum | required",
+      "number": "string | required",
+      "expiryDate": "YYYY-MM-DD | optional",
+      "consent": "true | required"
+    },
+    "example": {
+      "url": "/v1/documents",
+      "headers": {
+        "content-type": "multipart/form-data; boundary=--------------------------875cebca8e0abd148a479078"
+      },
+      "body": {
+        "type": "VEHICLE_RC",
+        "number": "MH12AB1234RC0001",
+        "expiryDate": "2037-05-31T00:00:00.000Z",
+        "consent": true,
+        "file": "<binary>"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 201,
+      "example": {
+        "data": {
+          "id": "6adb659abe27f7c9498867e2",
+          "status": "PENDING_VERIFICATION",
+          "numberMasked": "********0001",
+          "type": "VEHICLE_RC"
+        },
+        "requestId": "6013187a-3858-458e-9dcc-6624a91f8180"
+      }
+    },
+    "errors": [
+      {
+        "code": "FILE_TOO_LARGE",
+        "status": 413,
+        "example": {
+          "error": {
+            "code": "FILE_TOO_LARGE",
+            "message": "File is too large"
+          },
+          "requestId": "ddb67f09-0c04-4d94-99c3-def4dd591cf2"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "UNSUPPORTED_TYPE",
+        "status": 415,
+        "example": {
+          "error": {
+            "code": "UNSUPPORTED_TYPE",
+            "message": "Allowed types: application/pdf, image/jpeg, image/png"
+          },
+          "requestId": "bfa41a1f-bb43-4e7a-98fd-457760e94c0b"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "DOCUMENT_TYPE_INVALID",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "DOCUMENT_TYPE_INVALID",
+            "message": "type must be one of VEHICLE_RC, FASTAG_CERTIFICATE, MOTOR_INSURANCE, PUC, DRIVING_LICENCE",
+            "details": [
+              {
+                "field": "type",
+                "issue": "invalid"
+              }
+            ]
+          },
+          "requestId": "1eb65047-9a76-4b94-a553-c67e6090053c"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "VALIDATION_FAILED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "VALIDATION_FAILED",
+            "message": "Please check the highlighted fields.",
+            "details": [
+              {
+                "field": "consent",
+                "issue": "any.required",
+                "message": "consent=true is required"
+              }
+            ]
+          },
+          "requestId": "68f14a8b-7fb5-4f32-9c7e-03b9728c1971"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/documents\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -F \"type=VEHICLE_RC\" \\\n  -F \"number=MH12AB1234RC0001\" \\\n  -F \"expiryDate=2037-05-31T00:00:00.000Z\" \\\n  -F \"consent=<consent>\" \\\n  -F \"file=@/path/to/file\"",
+  "testing": {
+    "testedBy": [
+      "document.test.js",
+      "errors.test.js"
+    ],
+    "statusesSeenInTests": [
+      "201 OK",
+      "422 VALIDATION_FAILED",
+      "422 DOCUMENT_TYPE_INVALID",
+      "415 UNSUPPORTED_TYPE",
+      "413 FILE_TOO_LARGE"
+    ],
+    "passed": true
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "id": "CRT-04",
+  "name": "Clear cart",
+  "group": "Catalogue, wishlist and cart",
+  "method": "DELETE",
+  "path": "/v1/cart",
+  "url": "{{baseUrl}}/v1/cart",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Payment Result"
+  ],
+  "purpose": "Fallback clear after PAID (the server also clears it).",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/cart",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 204,
+      "example": null
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X DELETE \"http://localhost:5000/v1/cart\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "shop.test.js"
+    ],
+    "statusesSeenInTests": [
+      "204 OK"
+    ],
+    "passed": true
+  }
+}

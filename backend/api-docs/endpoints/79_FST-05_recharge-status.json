@@ -1,0 +1,81 @@
+{
+  "id": "FST-05",
+  "name": "Recharge status",
+  "group": "FASTag",
+  "method": "GET",
+  "path": "/v1/fastag/recharge/{id}",
+  "url": "{{baseUrl}}/v1/fastag/recharge/{id}",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "FASTag Recharge"
+  ],
+  "purpose": "Poll until CREDITED or FAILED.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "id": "string | required"
+    },
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/fastag/recharge/6adb65a1f2e34c1ceef57704",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "id": "6adb65a1f2e34c1ceef57704",
+          "status": "PAID",
+          "vehicle": "KA17SP5300",
+          "issuerCode": "KOTAK",
+          "amountPaise": 50000,
+          "failureReason": null,
+          "createdAt": "2026-10-23T13:48:17.366Z",
+          "creditedAt": null
+        },
+        "requestId": "3afa332e-be16-4137-b50e-7bf95a7bcd7f"
+      }
+    },
+    "errors": [
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "Recharge not found"
+          },
+          "requestId": "46174beb-062b-4875-b2d0-650d3c54ec76"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/fastag/recharge/6adb65a1f2e34c1ceef57704\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "fastag.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "404 NOT_FOUND"
+    ],
+    "passed": true
+  }
+}

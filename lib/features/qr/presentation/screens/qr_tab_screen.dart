@@ -4,7 +4,7 @@ import 'package:snap_q/core/constants/app_colors.dart';
 import 'package:snap_q/core/constants/app_text_styles.dart';
 import 'package:snap_q/core/utils/dynamic_snackbar.dart';
 import 'package:snap_q/core/utils/snackbar_helper.dart';
-import 'package:snap_q/core/widgets/vt_button.dart';
+import 'package:snap_q/features/profile/presentation/widgets/custom_button.dart';
 import 'package:snap_q/core/routes/app_routes.dart';
 
 /// Placeholder tab shown inside the bottom-nav PageView.
@@ -123,12 +123,10 @@ class QrTabScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
 
-                VTButton(
+                CustomButton(
                   text: 'Open Scanner',
-                  onPressed: () => _openScanner(context),
-                  textColor: AppColors.white,
-                  height: 52,
                   icon: Icons.camera_alt_rounded,
+                  onPressed: () => _openScanner(context),
                 ),
               ],
             ),

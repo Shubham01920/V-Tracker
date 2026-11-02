@@ -1,0 +1,70 @@
+{
+  "id": "NOT-02",
+  "name": "Mark notification read",
+  "group": "Calls, notifications and devices",
+  "method": "PATCH",
+  "path": "/v1/notifications/{id}/read",
+  "url": "{{baseUrl}}/v1/notifications/{id}/read",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Notifications"
+  ],
+  "purpose": "Mark one notification read.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "id": "string | required"
+    },
+    "query": {},
+    "bodyType": "application/json",
+    "body": {},
+    "example": {
+      "url": "/v1/notifications/6adb65a4df2e98c8097e8210/read",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 204,
+      "example": null
+    },
+    "errors": [
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "Notification not found"
+          },
+          "requestId": "b07a8e94-d8e8-424f-ab99-7a36e6594dbc"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X PATCH \"http://localhost:5000/v1/notifications/6adb65a4df2e98c8097e8210/read\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "notification.test.js"
+    ],
+    "statusesSeenInTests": [
+      "204 OK",
+      "404 NOT_FOUND"
+    ],
+    "passed": true
+  }
+}

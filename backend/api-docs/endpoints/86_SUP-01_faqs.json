@@ -1,0 +1,75 @@
+{
+  "id": "SUP-01",
+  "name": "FAQs",
+  "group": "Content, support, config and lookups",
+  "method": "GET",
+  "path": "/v1/support/faqs",
+  "url": "{{baseUrl}}/v1/support/faqs",
+  "auth": "None",
+  "webhook": false,
+  "calledBy": [
+    "Help and Support"
+  ],
+  "purpose": "FAQ list.",
+  "request": {
+    "headers": {
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/support/faqs",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "items": [
+            {
+              "id": "6adb6597cf39e842d2178415",
+              "question": "How does V Tracker protect my number?",
+              "answer": "Calls from a label scan are connected through a virtual number, so the caller never sees your number and you never see theirs.",
+              "order": 1
+            },
+            {
+              "id": "6adb6597cf39e842d2178416",
+              "question": "Does the person scanning need the app?",
+              "answer": "No. Any phone camera opens the V Tracker web page, where they can call you privately or send an alert.",
+              "order": 2
+            },
+            {
+              "id": "6adb6597cf39e842d2178417",
+              "question": "How do I link a label to my vehicle?",
+              "answer": "When your label arrives, open the Scan tab, scan the label and tap \"Link Vehicle\". Choose the vehicle or add a new one.",
+              "order": 3
+            }
+          ]
+        },
+        "requestId": "01adcc58-aab8-404c-abd2-f56e464b1c18"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/support/faqs\"",
+  "testing": {
+    "testedBy": [
+      "content.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

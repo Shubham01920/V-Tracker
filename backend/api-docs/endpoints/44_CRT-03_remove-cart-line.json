@@ -1,0 +1,76 @@
+{
+  "id": "CRT-03",
+  "name": "Remove cart line",
+  "group": "Catalogue, wishlist and cart",
+  "method": "DELETE",
+  "path": "/v1/cart/items/{productId}",
+  "url": "{{baseUrl}}/v1/cart/items/{productId}",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Cart"
+  ],
+  "purpose": "Remove a line; returns the updated cart.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "productId": "string | required"
+    },
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/cart/items/6adb65b0cf39e842d2178541",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "items": [
+            {
+              "productId": "6adb65b0cf39e842d2178543",
+              "title": "4 Wheeler QR Label",
+              "subtitle": "Perfect for Cars & SUVs",
+              "category": "FOUR_WHEELER",
+              "imageUrl": "http://localhost:5000/static/products/four-wheeler.svg",
+              "unitPricePaise": 99900,
+              "qty": 1,
+              "lineTotalPaise": 99900,
+              "taxRatePercent": 18,
+              "inStock": true
+            }
+          ],
+          "totalItems": 1,
+          "subtotalPaise": 99900,
+          "currency": "INR"
+        },
+        "requestId": "f7a574cb-21b4-4001-b3f6-6bdca5187a65"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X DELETE \"http://localhost:5000/v1/cart/items/6adb65b0cf39e842d2178541\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "shop.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

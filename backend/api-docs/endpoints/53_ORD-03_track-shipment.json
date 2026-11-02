@@ -1,0 +1,106 @@
+{
+  "id": "ORD-03",
+  "name": "Track shipment",
+  "group": "Orders and tracking",
+  "method": "GET",
+  "path": "/v1/tracking",
+  "url": "{{baseUrl}}/v1/tracking",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Track Order",
+    "Order Detail"
+  ],
+  "purpose": "Order number, order id or AWB -> courier, ETA and 6-stage timeline. Only the caller's orders.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {
+      "ref": "string | required"
+    },
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/tracking?ref=ORD-892306",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "orderId": "6adb65b175d71a0cb96f8358",
+          "orderNumber": "ORD-892306",
+          "status": "PAID",
+          "courier": "Blue Dart Express",
+          "awb": "BD897402667",
+          "eta": "2026-10-27T13:48:34.000Z",
+          "stages": [
+            {
+              "code": "PLACED",
+              "title": "Order Placed",
+              "detail": "Your order has been placed",
+              "location": null,
+              "at": "2026-10-23T13:48:34.000Z",
+              "state": "CURRENT"
+            },
+            {
+              "code": "PROCESSED",
+              "title": "Processed",
+              "detail": null,
+              "location": null,
+              "at": null,
+              "state": "PENDING"
+            },
+            {
+              "code": "SHIPPED",
+              "title": "Shipped",
+              "detail": null,
+              "location": null,
+              "at": null,
+              "state": "PENDING"
+            }
+          ]
+        },
+        "requestId": "f2da7646-1a91-4ce9-a282-7940e25ff26c"
+      }
+    },
+    "errors": [
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "No order or shipment with this number on your account"
+          },
+          "requestId": "6b5fd630-4f57-4e41-a390-51ac177c7386"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/tracking?ref=ORD-892306\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "shop.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "404 NOT_FOUND"
+    ],
+    "passed": true
+  }
+}

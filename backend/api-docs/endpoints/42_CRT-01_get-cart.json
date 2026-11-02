@@ -1,0 +1,63 @@
+{
+  "id": "CRT-01",
+  "name": "Get cart",
+  "group": "Catalogue, wishlist and cart",
+  "method": "GET",
+  "path": "/v1/cart",
+  "url": "{{baseUrl}}/v1/cart",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Home",
+    "Shop",
+    "Cart"
+  ],
+  "purpose": "Server cart, re-priced on every read.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/cart",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "items": [],
+          "totalItems": 0,
+          "subtotalPaise": 0,
+          "currency": "INR"
+        },
+        "requestId": "75a02dc1-22e8-4c0e-aeb7-81df8240dce5"
+      }
+    },
+    "errors": [],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/cart\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "shop.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK"
+    ],
+    "passed": true
+  }
+}

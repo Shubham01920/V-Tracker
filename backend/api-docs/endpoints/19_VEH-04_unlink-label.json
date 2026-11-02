@@ -1,0 +1,83 @@
+{
+  "id": "VEH-04",
+  "name": "Unlink label",
+  "group": "Vehicles, QR, contacts and public scan",
+  "method": "DELETE",
+  "path": "/v1/vehicles/{id}/qr",
+  "url": "{{baseUrl}}/v1/vehicles/{id}/qr",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "My Vehicles"
+  ],
+  "purpose": "Unlink the label (sold / damaged vehicle) so it can be re-bound by QR-02.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "id": "string | required"
+    },
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/vehicles/6adb65b88ee1a60d3a13945a/qr",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 204,
+      "example": null
+    },
+    "errors": [
+      {
+        "code": "QR_NOT_LINKED",
+        "status": 409,
+        "example": {
+          "error": {
+            "code": "QR_NOT_LINKED",
+            "message": "No label is linked to this vehicle"
+          },
+          "requestId": "7f264cb8-34d2-4846-b8a4-0066e942a230"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "Vehicle not found"
+          },
+          "requestId": "7c0e7b21-ef59-4185-873e-6590c156686d"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X DELETE \"http://localhost:5000/v1/vehicles/6adb65b88ee1a60d3a13945a/qr\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "errors.test.js",
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "404 NOT_FOUND",
+      "204 OK",
+      "409 QR_NOT_LINKED"
+    ],
+    "passed": true
+  }
+}

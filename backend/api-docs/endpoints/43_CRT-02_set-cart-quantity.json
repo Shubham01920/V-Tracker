@@ -1,0 +1,137 @@
+{
+  "id": "CRT-02",
+  "name": "Set cart quantity",
+  "group": "Catalogue, wishlist and cart",
+  "method": "PUT",
+  "path": "/v1/cart/items/{productId}",
+  "url": "{{baseUrl}}/v1/cart/items/{productId}",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Product Detail",
+    "Cart"
+  ],
+  "purpose": "Set the quantity of a line (adds the line if missing).",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "productId": "string | required"
+    },
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "qty": "integer | required | 1-10"
+    },
+    "example": {
+      "url": "/v1/cart/items/6adb6597cf39e842d2178406",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "qty": 1
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "items": [
+            {
+              "productId": "6adb6597cf39e842d2178406",
+              "title": "4 Wheeler QR Label",
+              "subtitle": "Perfect for Cars & SUVs",
+              "category": "FOUR_WHEELER",
+              "imageUrl": "http://localhost:5000/static/products/four-wheeler.svg",
+              "unitPricePaise": 99900,
+              "qty": 1,
+              "lineTotalPaise": 99900,
+              "taxRatePercent": 18,
+              "inStock": true
+            }
+          ],
+          "totalItems": 1,
+          "subtotalPaise": 99900,
+          "currency": "INR"
+        },
+        "requestId": "5f449e9d-4aaa-4bfc-8db5-e35b76aef27a"
+      }
+    },
+    "errors": [
+      {
+        "code": "OUT_OF_STOCK",
+        "status": 409,
+        "example": {
+          "error": {
+            "code": "OUT_OF_STOCK",
+            "message": "Only 1 left in stock",
+            "details": [
+              {
+                "field": "qty",
+                "issue": "stock",
+                "available": 1
+              }
+            ]
+          },
+          "requestId": "941fa9e0-e307-4769-95c0-77288edf63ff"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "QTY_LIMIT",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "QTY_LIMIT",
+            "message": "You can add at most 10 of one item"
+          },
+          "requestId": "f090ef69-b0aa-4784-8b42-a6e713262b62"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "Product not found"
+          },
+          "requestId": "8b8655c1-f6f1-4d53-bc74-08308cb6b1bf"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X PUT \"http://localhost:5000/v1/cart/items/6adb6597cf39e842d2178406\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"qty\":1}'",
+  "testing": {
+    "testedBy": [
+      "content.test.js",
+      "errors.test.js",
+      "notification.test.js",
+      "ratelimit.test.js",
+      "referral.test.js",
+      "shop.test.js",
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "404 NOT_FOUND",
+      "422 QTY_LIMIT",
+      "409 OUT_OF_STOCK"
+    ],
+    "passed": true
+  }
+}

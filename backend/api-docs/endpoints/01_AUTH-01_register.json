@@ -1,0 +1,191 @@
+{
+  "id": "AUTH-01",
+  "name": "Register",
+  "group": "Authentication",
+  "method": "POST",
+  "path": "/v1/auth/register",
+  "url": "{{baseUrl}}/v1/auth/register",
+  "auth": "None",
+  "webhook": false,
+  "calledBy": [
+    "Signup tab"
+  ],
+  "purpose": "Create an owner account, attach an optional referrer and send a phone OTP. Repeating the call for an unverified phone updates the details and re-sends the OTP (rate-limited).",
+  "request": {
+    "headers": {
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "fullName": "string | required | 2-80 chars",
+      "email": "string | required | e-mail",
+      "phone": "string | required | 10-digit Indian mobile (6-9 first)",
+      "password": "string | required | min 8, letters + digits",
+      "referralCode": "string | optional | another user's code"
+    },
+    "example": {
+      "url": "/v1/auth/register",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "fullName": "Shubham Maurya",
+        "email": "user.mvl0yzlz134382@example.com",
+        "phone": "9100134369",
+        "password": "Secret@123"
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 201,
+      "example": {
+        "data": {
+          "userId": "6adb6594c2a2a49ecda831d1",
+          "verification": {
+            "challengeId": "abcd6e6a-2990-4435-9b99-b72acd80ba0a",
+            "resendAfterSec": 0,
+            "expiresInSec": 300,
+            "phoneMasked": "******4369",
+            "devCode": "325052"
+          }
+        },
+        "requestId": "e49d3cc0-7a62-4196-b2e4-04c91d3a9ab9"
+      }
+    },
+    "errors": [
+      {
+        "code": "EMAIL_TAKEN",
+        "status": 409,
+        "example": {
+          "error": {
+            "code": "EMAIL_TAKEN",
+            "message": "This e-mail is already registered",
+            "details": [
+              {
+                "field": "email",
+                "issue": "taken"
+              }
+            ]
+          },
+          "requestId": "93d4103c-ef4f-4145-b879-15e81a4a7c9a"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "PHONE_TAKEN",
+        "status": 409,
+        "example": {
+          "error": {
+            "code": "PHONE_TAKEN",
+            "message": "This phone number is already registered",
+            "details": [
+              {
+                "field": "phone",
+                "issue": "taken"
+              }
+            ]
+          },
+          "requestId": "3f9f5360-9b2e-4a5b-b1f0-e8495a0ea01a"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "REFERRAL_INVALID",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "REFERRAL_INVALID",
+            "message": "Referral code is not valid",
+            "details": [
+              {
+                "field": "referralCode",
+                "issue": "invalid",
+                "message": "Clear the field to sign up without a code"
+              }
+            ]
+          },
+          "requestId": "de2c4592-c770-4229-a1ce-a4b246b513b5"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "VALIDATION_FAILED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "VALIDATION_FAILED",
+            "message": "Please check the highlighted fields.",
+            "details": [
+              {
+                "field": "fullName",
+                "issue": "string.min",
+                "message": "fullName length must be at least 2 characters long"
+              },
+              {
+                "field": "email",
+                "issue": "string.email",
+                "message": "email must be a valid email"
+              },
+              {
+                "field": "phone",
+                "issue": "string.pattern.base",
+                "message": "Enter a 10-digit Indian mobile number starting with 6-9"
+              }
+            ]
+          },
+          "requestId": "7abe6404-4440-4906-9cd0-a5fc3ffa20da"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "RATE_LIMITED",
+        "status": 429,
+        "example": {
+          "error": {
+            "code": "RATE_LIMITED",
+            "message": "Too many requests. Please try again later."
+          },
+          "requestId": "c7d9c4e0-e55f-4e65-a92d-d661f146621e"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": "verification.devCode is returned only when NODE_ENV is not production.",
+  "curl": "curl -X POST \"http://localhost:5000/v1/auth/register\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"fullName\":\"Shubham Maurya\",\"email\":\"user.mvl0yzlz134382@example.com\",\"phone\":\"9100134369\",\"password\":\"Secret@123\"}'",
+  "testing": {
+    "testedBy": [
+      "auth.test.js",
+      "content.test.js",
+      "document.test.js",
+      "errors.test.js",
+      "fastag.test.js",
+      "notification.test.js",
+      "ratelimit.test.js",
+      "referral.test.js",
+      "security.test.js",
+      "shop.test.js",
+      "user.test.js",
+      "vehicle.test.js",
+      "wallet.test.js"
+    ],
+    "statusesSeenInTests": [
+      "201 OK",
+      "422 VALIDATION_FAILED",
+      "409 PHONE_TAKEN",
+      "409 EMAIL_TAKEN",
+      "422 REFERRAL_INVALID",
+      "429 RATE_LIMITED"
+    ],
+    "passed": true
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "id": "LKP-01",
+  "name": "Pincode lookup",
+  "group": "Content, support, config and lookups",
+  "method": "GET",
+  "path": "/v1/lookup/pincode/{pin}",
+  "url": "{{baseUrl}}/v1/lookup/pincode/{pin}",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Edit Profile",
+    "Address Book"
+  ],
+  "purpose": "City and state from a pincode.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {
+      "pin": "string | required | 6 digits"
+    },
+    "query": {},
+    "bodyType": null,
+    "body": {},
+    "example": {
+      "url": "/v1/lookup/pincode/560034",
+      "headers": {},
+      "body": {}
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "pincode": "560034",
+          "city": "Bengaluru",
+          "state": "Karnataka",
+          "district": "Bengaluru Urban"
+        },
+        "requestId": "485c80c4-c6af-415c-a252-7a8a645a4072"
+      }
+    },
+    "errors": [
+      {
+        "code": "PINCODE_NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "PINCODE_NOT_FOUND",
+            "message": "We could not find this pincode. Enter city and state manually."
+          },
+          "requestId": "0c62c341-3fbe-4bdb-ae5b-1140b95042c9"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "VALIDATION_FAILED",
+        "status": 422,
+        "example": {
+          "error": {
+            "code": "VALIDATION_FAILED",
+            "message": "Please check the highlighted fields.",
+            "details": [
+              {
+                "field": "pin",
+                "issue": "string.pattern.base",
+                "message": "Pincode must be 6 digits"
+              }
+            ]
+          },
+          "requestId": "dc26eacf-f5d8-4834-8d6c-078d7c55914f"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "UNAUTHORIZED",
+        "status": 401,
+        "example": {
+          "error": {
+            "code": "UNAUTHORIZED",
+            "message": "Missing bearer token"
+          },
+          "requestId": "b50895f7-fc6f-4608-8299-79c5fe6a2b9c"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X GET \"http://localhost:5000/v1/lookup/pincode/560034\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\"",
+  "testing": {
+    "testedBy": [
+      "content.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "404 PINCODE_NOT_FOUND",
+      "422 VALIDATION_FAILED",
+      "401 UNAUTHORIZED"
+    ],
+    "passed": true
+  }
+}

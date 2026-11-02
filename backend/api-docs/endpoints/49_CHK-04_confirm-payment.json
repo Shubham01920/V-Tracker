@@ -1,0 +1,104 @@
+{
+  "id": "CHK-04",
+  "name": "Confirm payment",
+  "group": "Checkout and payments",
+  "method": "POST",
+  "path": "/v1/payments/confirm",
+  "url": "{{baseUrl}}/v1/payments/confirm",
+  "auth": "Bearer",
+  "webhook": false,
+  "calledBy": [
+    "Payment"
+  ],
+  "purpose": "Send the gateway payment id + signature after checkout. Final PAID comes from the CHK-05 webhook; poll ORD-02.",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <accessToken>",
+      "Content-Type": "application/json",
+      "X-Request-Id": "<optional UUID, echoed back>"
+    },
+    "pathParams": {},
+    "query": {},
+    "bodyType": "application/json",
+    "body": {
+      "orderId": "string | required",
+      "gatewayPaymentId": "string | required",
+      "signature": "string | required | HMAC_SHA256(\"<gatewayOrderId>|<gatewayPaymentId>\", key secret)"
+    },
+    "example": {
+      "url": "/v1/payments/confirm",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "orderId": "6adb65978277ffe581841470",
+        "gatewayPaymentId": "pay_zfzDh4rumpOw5A",
+        "signature": "cdf677780df7..."
+      }
+    }
+  },
+  "responses": {
+    "success": {
+      "status": 200,
+      "example": {
+        "data": {
+          "orderId": "6adb65978277ffe581841470",
+          "status": "VERIFYING",
+          "orderStatus": "PENDING_PAYMENT"
+        },
+        "requestId": "8c4b8e01-2e01-4345-87e0-df02fdbcd8b3"
+      }
+    },
+    "errors": [
+      {
+        "code": "SIGNATURE_INVALID",
+        "status": 401,
+        "example": {
+          "error": {
+            "code": "SIGNATURE_INVALID",
+            "message": "Payment signature could not be verified"
+          },
+          "requestId": "7a95304f-3ac0-4353-b402-0410dfb90fda"
+        },
+        "verifiedByTests": true
+      },
+      {
+        "code": "ORDER_NOT_FOUND",
+        "status": 404,
+        "example": {
+          "error": {
+            "code": "ORDER_NOT_FOUND",
+            "message": "Order not found"
+          },
+          "requestId": "8b5f1373-7a9b-4e74-8ef3-cd6917f76754"
+        },
+        "verifiedByTests": true
+      }
+    ],
+    "commonErrors": [
+      "VALIDATION_FAILED (422)",
+      "UNAUTHORIZED / TOKEN_EXPIRED / TOKEN_INVALID (401)",
+      "RATE_LIMITED (429)",
+      "INTERNAL_ERROR (500)"
+    ]
+  },
+  "notes": null,
+  "curl": "curl -X POST \"http://localhost:5000/v1/payments/confirm\" \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"orderId\":\"6adb65978277ffe581841470\",\"gatewayPaymentId\":\"pay_zfzDh4rumpOw5A\",\"signature\":\"cdf677780df7...\"}'",
+  "testing": {
+    "testedBy": [
+      "content.test.js",
+      "errors.test.js",
+      "notification.test.js",
+      "ratelimit.test.js",
+      "referral.test.js",
+      "shop.test.js",
+      "vehicle.test.js"
+    ],
+    "statusesSeenInTests": [
+      "200 OK",
+      "401 SIGNATURE_INVALID",
+      "404 ORDER_NOT_FOUND"
+    ],
+    "passed": true
+  }
+}
