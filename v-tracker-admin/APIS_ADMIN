@@ -1,0 +1,226 @@
+# 🛡️ V Tracker Admin Panel — API Integration Mapping Guide
+
+> **Server Base URL:** `http://localhost:5000`  
+> **Auth Header:** `Authorization: Bearer <accessToken>`  
+> **Content-Type:** `application/json`
+
+Ye document specify karta hai ki backend ki kaunsi API Admin Panel ke kis page par integrate karni hai aur kyun chahiye.
+
+---
+
+## 🔐 1. Authentication & System Core APIs
+
+### 1. Admin Login API
+- **Target Page:** Login Page ([`src/pages/Login.jsx`](file:///f:/v-tracker-admin/src/pages/Login.jsx))
+- **API Endpoint:** `POST /v1/auth/login`
+- **Why We Need It There:** Admin credentials (`email`, `password`, `deviceId`) verify karta hai, check karta hai ki user role `ADMIN` hai ya nahi, aur JWT `accessToken` & `refreshToken` return karta hai jisse poore dashboard ko access milta hai. *(Status: ✅ Already Integrated)*
+
+### 2. Admin Logout API
+- **Target Page:** Global Header & Sidebar ([`src/components/layout/Header.jsx`](file:///f:/v-tracker-admin/src/components/layout/Header.jsx), [`src/components/layout/Sidebar.jsx`](file:///f:/v-tracker-admin/src/components/layout/Sidebar.jsx))
+- **API Endpoint:** `POST /v1/auth/logout`
+- **Why We Need It There:** Jab admin Logout button click kare, server-side refresh token blacklist/revoke ho jaye aur browser storage se admin session securely clear karke `/` (Login) par redirect kiya ja sake. *(Status: ✅ Already Integrated in Sidebar.jsx)*
+
+### 3. Token Refresh API
+- **Target Page:** App Root / Background Session Handler ([`src/App.jsx`](file:///f:/v-tracker-admin/src/App.jsx))
+- **API Endpoint:** `POST /v1/auth/refresh`
+- **Why We Need It There:** 15-minute ka short-lived JWT access token expire hone par background mein auto-refresh ho sake, taaki admin bar-bar logout na ho aur uninterrupted dashboard use kar sake.
+
+### 4. Admin Profile API
+- **Target Page:** Admin Profile Page ([`src/pages/AdminProfile.jsx`](file:///f:/v-tracker-admin/src/pages/AdminProfile.jsx)) & Navbar Header ([`src/components/layout/Header.jsx`](file:///f:/v-tracker-admin/src/components/layout/Header.jsx))
+- **API Endpoint:** `GET /v1/me`
+- **Why We Need It There:** Top navbar profile avatar aur initials render karne ke liye, aur right corner "V Tracker Admin" click karne par poori details (Member ID, Role, Phone, Address, KYC Status, Points) dedicated Profile screen par display karne ke liye. *(Status: ✅ Already Integrated)*
+
+### 5. All Users List API
+- **Target Page:** User Management Page ([`src/pages/Users.jsx`](file:///f:/v-tracker-admin/src/pages/Users.jsx))
+- **API Endpoint:** `GET /v1/admin/users`
+- **Why We Need It There:** Registered users ki complete list, summary statistics (total, active, disabled), search & filters, pagination load karne ke liye. *(Status: ✅ Already Integrated)*
+
+### 6. Particular User Details API
+- **Target Page:** User Details Drawer ([`src/components/users/UserDrawer.jsx`](file:///f:/v-tracker-admin/src/components/users/UserDrawer.jsx))
+- **API Endpoint:** `GET /v1/admin/users/:id` (ADM-05)
+- **Why We Need It There:** Kisi selected user ka full profile inspect karne ke liye (address, KYC status, wallet balance, linked vehicles, recent hardware orders, referral statistics). *(Status: ✅ Already Integrated)*
+
+### 7. Update User Profile API
+- **Target Page:** User Details Drawer Edit View ([`src/components/users/UserDrawer.jsx`](file:///f:/v-tracker-admin/src/components/users/UserDrawer.jsx))
+- **API Endpoint:** `PATCH /v1/admin/users/:id` (ADM-06)
+- **Why We Need It There:** User support ticket aane par user ki basic information (Name, Email, Address, City, State, Pincode) admin se directly edit karne ke liye. *(Status: ✅ Already Integrated)*
+
+### 8. Change User Status (Block / Activate) API
+- **Target Page:** User Details Drawer & Block Modal ([`src/components/users/UserDrawer.jsx`](file:///f:/v-tracker-admin/src/components/users/UserDrawer.jsx))
+- **API Endpoint:** `PATCH /v1/admin/users/:id/status` (ADM-07)
+- **Why We Need It There:** Fraudulent activity ya abusive calls hone par user ko `DISABLED` karke instant all sessions revoke karne ya wapas `ACTIVE` karne ke liye. *(Status: ✅ Already Integrated)*
+
+### 9. Force Logout User Sessions API
+- **Target Page:** User Details Drawer ([`src/components/users/UserDrawer.jsx`](file:///f:/v-tracker-admin/src/components/users/UserDrawer.jsx))
+- **API Endpoint:** `POST /v1/admin/users/:id/logout` (ADM-09)
+- **Why We Need It There:** Lost phone ya security risk hone par user ke sabhi active JWT refresh tokens ko turant revoke karne ke liye. *(Status: ✅ Already Integrated)*
+
+### 10. Change User Role API
+- **Target Page:** User Details Drawer Edit View ([`src/components/users/UserDrawer.jsx`](file:///f:/v-tracker-admin/src/components/users/UserDrawer.jsx))
+- **API Endpoint:** `PATCH /v1/admin/users/:id/role` (ADM-08)
+- **Why We Need It There:** Kisi user ko `ADMIN` ya standard `OWNER` role assign/revoke karne ke liye. *(Status: ✅ Already Integrated)*
+
+### 11. System Health Ping API
+- **Target Page:** Dashboard Overview ([`src/pages/Dashboard.jsx`](file:///f:/v-tracker-admin/src/pages/Dashboard.jsx))
+- **API Endpoint:** `GET /health`
+- **Why We Need It There:** Server aur MongoDB cluster ka live uptime status (`{"status":"ok","db":"up"}`) dashboard header ya status badge par show karne ke liye, jisse pata chale backend online hai.
+
+### 6. Global App Config API
+- **Target Page:** Dashboard & Settings ([`src/pages/Dashboard.jsx`](file:///f:/v-tracker-admin/src/pages/Dashboard.jsx))
+- **API Endpoint:** `GET /v1/config`
+- **Why We Need It There:** System-wide settings (maintenance mode status, min mobile app version, active feature toggles) monitor karne ke liye.
+
+---
+
+## 📋 2. Verification & KYC Review Workflows (System-Wide)
+
+### 7. All Users Document Review Queue API
+- **Target Page:** Vehicle Documents Page ([`src/pages/VehicleDocuments.jsx`](file:///f:/v-tracker-admin/src/pages/VehicleDocuments.jsx))
+- **API Endpoint:** `GET /v1/admin/documents?status=PENDING_VERIFICATION`
+- **Why We Need It There:** Sabhi app users dwara upload kiye gaye vehicle documents (RC, Insurance, PUC, Driving Licence) ki live queue load karne ke liye taaki admin verification start kar sake.
+
+### 8. Approve / Reject User Document API
+- **Target Page:** Vehicle Documents Review Modal ([`src/pages/VehicleDocuments.jsx`](file:///f:/v-tracker-admin/src/pages/VehicleDocuments.jsx))
+- **API Endpoint:** `PATCH /v1/admin/documents/:id`
+- **Why We Need It There:** Document inspect karne ke baad admin decision (`APPROVE` ya `REJECT` with reason) submit karne ke liye. Backend automatic user ko push notification bhejta hai.
+
+### 9. Decrypt & View Document File API
+- **Target Page:** Document Preview Modal ([`src/pages/VehicleDocuments.jsx`](file:///f:/v-tracker-admin/src/pages/VehicleDocuments.jsx))
+- **API Endpoint:** `GET /v1/files/:token`
+- **Why We Need It There:** User ke uploaded sensitive encrypted files (AES-256-GCM) ko stream karke admin browser mein high-res image/PDF preview dikhane ke liye.
+
+---
+
+## 💰 3. Payouts & Finance Workflows
+
+### 10. Referral Payout Settlement Action API
+- **Target Page:** Referral Payouts Page ([`src/pages/ReferralPayouts.jsx`](file:///f:/v-tracker-admin/src/pages/ReferralPayouts.jsx))
+- **API Endpoint:** `PATCH /v1/admin/payouts/:id`
+- **Why We Need It There:** Admin manual referral commission payouts ko `CREDIT` (user ke wallet mein credit) ya `REVERSE` karne ke liye action buttons par trigger karega.
+
+### 11. Bank IFSC Lookup API
+- **Target Page:** Withdraw / Payout Details Modal ([`src/pages/Withdraw.jsx`](file:///f:/v-tracker-admin/src/pages/Withdraw.jsx), [`src/pages/ReferralPayouts.jsx`](file:///f:/v-tracker-admin/src/pages/ReferralPayouts.jsx))
+- **API Endpoint:** `GET /v1/lookup/ifsc/:code`
+- **Why We Need It There:** Payout approve karne se pehle user ke diye IFSC code se Bank Name aur Branch verify karne ke liye taaki wrong account mein paise na transfer hon.
+
+---
+
+## 📦 4. Products, Packages & Inventory Workflows
+
+### 12. Products / QR Packages Catalogue API
+- **Target Page:** Plans & Pricing Page ([`src/pages/Plans.jsx`](file:///f:/v-tracker-admin/src/pages/Plans.jsx)) & QR Inventory Recent Batches ([`src/pages/QRInventory.jsx`](file:///f:/v-tracker-admin/src/pages/QRInventory.jsx))
+- **API Endpoint:** `GET /v1/products`
+- **Why We Need It There:** 
+  1. **Plans Page:** QR packages (2 Wheeler, 4 Wheeler, Commercial), unki live pricing (paise to INR), GST rate, aur descriptions display karne ke liye.
+  2. **QR Inventory Page:** Recent batches table mein category-wise current stock, pricing, aur stock availability show karne ke liye.
+
+### 13. Single Product Detail API
+- **Target Page:** Product Edit Modal ([`src/pages/Plans.jsx`](file:///f:/v-tracker-admin/src/pages/Plans.jsx))
+- **API Endpoint:** `GET /v1/products/:id`
+- **Why We Need It There:** Kisi specific QR package ki complete details, rating, price, aur specs fetch karke view/edit modal mein display karne ke liye.
+
+### 14. Inspect Any QR Code Status API
+- **Target Page:** QR Inventory / Verification Modal ([`src/pages/QRInventory.jsx`](file:///f:/v-tracker-admin/src/pages/QRInventory.jsx))
+- **API Endpoint:** `GET /v1/qr/:qrUuid/status`
+- **Why We Need It There:** Admin kisi bhi physical QR sticker ka UUID scan/enter karke instantly check kar sake ki ye `UNACTIVATED`, `ACTIVATED`, ya `INVALID` hai.
+
+---
+
+## 🚗 5. Vehicles & Call Alerts Management
+
+### 15. Vehicles List API
+- **Target Page:** Vehicles Page ([`src/pages/Vehicles.jsx`](file:///f:/v-tracker-admin/src/pages/Vehicles.jsx))
+- **API Endpoint:** `GET /v1/vehicles`
+- **Why We Need It There:** System mein registered vehicles, registration numbers, linked QR labels, aur vehicle types ka table render karne ke liye.
+
+### 16. Force Unlink QR from Vehicle API
+- **Target Page:** Vehicles Actions / QR Unlink Modal ([`src/pages/Vehicles.jsx`](file:///f:/v-tracker-admin/src/pages/Vehicles.jsx))
+- **API Endpoint:** `DELETE /v1/vehicles/:id/qr`
+- **Why We Need It There:** Agar user ka QR tag damage ho gaya ya car sell ho gayi, toh admin vehicle se QR unbind karke nayi QR ke liye slot free kar sake.
+
+### 17. Masked Call Logs API
+- **Target Page:** Call Logs Page ([`src/pages/CallLogs.jsx`](file:///f:/v-tracker-admin/src/pages/CallLogs.jsx))
+- **API Endpoint:** `GET /v1/calls`
+- **Why We Need It There:** QR scan karke bystander aur vehicle owner ke beech hui virtual masked phone calls, timestamps, duration, aur alert events ko audit karne ke liye.
+
+### 18. Block Harassing Caller API
+- **Target Page:** Call Logs Actions ([`src/pages/CallLogs.jsx`](file:///f:/v-tracker-admin/src/pages/CallLogs.jsx))
+- **API Endpoint:** `POST /v1/calls/:id/block`
+- **Why We Need It There:** Agar koi caller spam ya harassment kar raha ho, toh admin use system-wide blacklist/block kar sake.
+
+---
+
+## 🏷️ 6. Marketing, Orders & Support Workflows
+
+### 19. All Customer Orders API
+- **Target Page:** Orders Management Page ([`src/pages/Orders.jsx`](file:///f:/v-tracker-admin/src/pages/Orders.jsx))
+- **API Endpoint:** `GET /v1/admin/orders` (ADM-12)
+- **Why We Need It There:** QR sticker orders ki live list, summary counts by status, customer details, delivery addresses, aur pricing load karne ke liye. *(Status: ✅ Already Integrated)*
+
+### 20. Update Order Status / Dispatch Order API
+- **Target Page:** Orders Management ([`src/pages/Orders.jsx`](file:///f:/v-tracker-admin/src/pages/Orders.jsx)) & Dispatch Drawer ([`src/components/orders/OrderDispatchDrawer.jsx`](file:///f:/v-tracker-admin/src/components/orders/OrderDispatchDrawer.jsx))
+- **API Endpoint:** `PATCH /v1/admin/orders/:id/status` (ADM-14)
+- **Why We Need It There:** Order status directly dropdown se change karne ya dispatch drawer se courier AWB, tracking number aur hardware serial number assign karke `SHIPPED` mark karne ke liye. *(Status: ✅ Already Integrated)*
+
+### 21. Order Detail & Invoice API
+- **Target Page:** Order Invoice Page ([`src/pages/OrderInvoicePage.jsx`](file:///f:/v-tracker-admin/src/pages/OrderInvoicePage.jsx))
+- **API Endpoint:** `GET /v1/admin/orders/:id` (ADM-13)
+- **Why We Need It There:** Specific order ke line items, delivery address, GST calculation, QR label codes, aur customer details load karke printable invoice generate karne ke liye. *(Status: ✅ Already Integrated)*
+
+### 21. Validate & Manage Coupons API
+- **Target Page:** Promotions Page ([`src/pages/Promotions.jsx`](file:///f:/v-tracker-admin/src/pages/Promotions.jsx))
+- **API Endpoint:** `POST /v1/coupons/validate`
+- **Why We Need It There:** Admin panel par coupon codes ki validity, discount limits, aur expiry verify karne ke liye.
+
+### 22. Support Tickets API
+- **Target Page:** Support Management Page ([`src/pages/Support.jsx`](file:///f:/v-tracker-admin/src/pages/Support.jsx))
+- **API Endpoint:** `POST /v1/support/tickets` & `GET /v1/support/faqs`
+- **Why We Need It There:** Customer support issues aur FAQs manage karne ke liye.
+
+### 23. CMS Content Management API
+- **Target Page:** CMS Page ([`src/pages/CMS.jsx`](file:///f:/v-tracker-admin/src/pages/CMS.jsx))
+- **API Endpoint:** `GET /v1/content/:slug`
+- **Why We Need It There:** Legal pages jaise `/terms`, `/privacy`, aur `/about` ke static HTML/Markdown content blocks ko preview aur load karne ke liye.
+
+### 24. Pincode to City/State Lookup API
+- **Target Page:** Orders Dispatch & Address Forms ([`src/pages/Orders.jsx`](file:///f:/v-tracker-admin/src/pages/Orders.jsx))
+- **API Endpoint:** `GET /v1/lookup/pincode/:pin`
+- **Why We Need It There:** Shipping address verification ke time Indian 6-digit pincode se City aur State auto-fill karne ke liye.
+
+---
+
+## 📌 Summary Quick-Reference Table
+
+| # | Feature / Workflow | Method | Endpoint | Target Admin Page |
+|---|---|:---:|---|---|
+| 1 | **Admin Login** | `POST` | `/v1/auth/login` | [`Login.jsx`](file:///f:/v-tracker-admin/src/pages/Login.jsx) |
+| 2 | **Admin Logout** | `POST` | `/v1/auth/logout` | [`Sidebar.jsx`](file:///f:/v-tracker-admin/src/components/layout/Sidebar.jsx) *(Integrated)* |
+| 3 | **Token Refresh** | `POST` | `/v1/auth/refresh` | [`App.jsx`](file:///f:/v-tracker-admin/src/App.jsx) |
+| 4 | **Admin Profile** | `GET` | `/v1/me` | [`AdminProfile.jsx`](file:///f:/v-tracker-admin/src/pages/AdminProfile.jsx) / [`Header.jsx`](file:///f:/v-tracker-admin/src/components/layout/Header.jsx) *(Integrated)* |
+| 5 | **All Users List** | `GET` | `/v1/admin/users` | [`Users.jsx`](file:///f:/v-tracker-admin/src/pages/Users.jsx) *(Integrated)* |
+| 6 | **Particular User Details** | `GET` | `/v1/admin/users/:id` | [`UserDrawer.jsx`](file:///f:/v-tracker-admin/src/components/users/UserDrawer.jsx) *(Integrated)* |
+| 7 | **Update User Profile** | `PATCH` | `/v1/admin/users/:id` | [`UserDrawer.jsx`](file:///f:/v-tracker-admin/src/components/users/UserDrawer.jsx) *(Integrated)* |
+| 8 | **Change User Status (Block/Unblock)** | `PATCH` | `/v1/admin/users/:id/status` | [`UserDrawer.jsx`](file:///f:/v-tracker-admin/src/components/users/UserDrawer.jsx) *(Integrated)* |
+| 9 | **Force Logout Sessions** | `POST` | `/v1/admin/users/:id/logout` | [`UserDrawer.jsx`](file:///f:/v-tracker-admin/src/components/users/UserDrawer.jsx) *(Integrated)* |
+| 10 | **Change User Role** | `PATCH` | `/v1/admin/users/:id/role` | [`UserDrawer.jsx`](file:///f:/v-tracker-admin/src/components/users/UserDrawer.jsx) *(Integrated)* |
+| 5 | **System Health Ping** | `GET` | `/health` | [`Dashboard.jsx`](file:///f:/v-tracker-admin/src/pages/Dashboard.jsx) |
+| 6 | **Global App Config** | `GET` | `/v1/config` | [`Dashboard.jsx`](file:///f:/v-tracker-admin/src/pages/Dashboard.jsx) |
+| 7 | **Document Review Queue** | `GET` | `/v1/admin/documents` | [`VehicleDocuments.jsx`](file:///f:/v-tracker-admin/src/pages/VehicleDocuments.jsx) |
+| 8 | **Approve/Reject Document** | `PATCH` | `/v1/admin/documents/:id` | [`VehicleDocuments.jsx`](file:///f:/v-tracker-admin/src/pages/VehicleDocuments.jsx) |
+| 9 | **View Decrypted Document** | `GET` | `/v1/files/:token` | [`VehicleDocuments.jsx`](file:///f:/v-tracker-admin/src/pages/VehicleDocuments.jsx) |
+| 10 | **Referral Payout Action** | `PATCH` | `/v1/admin/payouts/:id` | [`ReferralPayouts.jsx`](file:///f:/v-tracker-admin/src/pages/ReferralPayouts.jsx) |
+| 11 | **IFSC Bank Lookup** | `GET` | `/v1/lookup/ifsc/:code` | [`Withdraw.jsx`](file:///f:/v-tracker-admin/src/pages/Withdraw.jsx) / [`ReferralPayouts.jsx`](file:///f:/v-tracker-admin/src/pages/ReferralPayouts.jsx) |
+| 12 | **Products / QR Catalogue** | `GET` | `/v1/products` | [`Plans.jsx`](file:///f:/v-tracker-admin/src/pages/Plans.jsx) / [`QRInventory.jsx`](file:///f:/v-tracker-admin/src/pages/QRInventory.jsx) |
+| 13 | **Single Product Detail** | `GET` | `/v1/products/:id` | [`Plans.jsx`](file:///f:/v-tracker-admin/src/pages/Plans.jsx) |
+| 14 | **Inspect QR Code Status** | `GET` | `/v1/qr/:qrUuid/status` | [`QRInventory.jsx`](file:///f:/v-tracker-admin/src/pages/QRInventory.jsx) |
+| 15 | **Vehicles List** | `GET` | `/v1/vehicles` | [`Vehicles.jsx`](file:///f:/v-tracker-admin/src/pages/Vehicles.jsx) |
+| 16 | **Unlink QR from Vehicle** | `DELETE` | `/v1/vehicles/:id/qr` | [`Vehicles.jsx`](file:///f:/v-tracker-admin/src/pages/Vehicles.jsx) |
+| 17 | **Masked Call Logs** | `GET` | `/v1/calls` | [`CallLogs.jsx`](file:///f:/v-tracker-admin/src/pages/CallLogs.jsx) |
+| 18 | **Block Caller** | `POST` | `/v1/calls/:id/block` | [`CallLogs.jsx`](file:///f:/v-tracker-admin/src/pages/CallLogs.jsx) |
+| 19 | **All Customer Orders** | `GET` | `/v1/admin/orders` | [`Orders.jsx`](file:///f:/v-tracker-admin/src/pages/Orders.jsx) *(Integrated)* |
+| 20 | **Update Order Status / Dispatch** | `PATCH` | `/v1/admin/orders/:id/status` | [`Orders.jsx`](file:///f:/v-tracker-admin/src/pages/Orders.jsx) / [`OrderDispatchDrawer.jsx`](file:///f:/v-tracker-admin/src/components/orders/OrderDispatchDrawer.jsx) *(Integrated)* |
+| 21 | **Order Detail & Invoice** | `GET` | `/v1/admin/orders/:id` | [`OrderInvoicePage.jsx`](file:///f:/v-tracker-admin/src/pages/OrderInvoicePage.jsx) *(Integrated)* |
+| 21 | **Coupons Validation** | `POST` | `/v1/coupons/validate` | [`Promotions.jsx`](file:///f:/v-tracker-admin/src/pages/Promotions.jsx) |
+| 22 | **Support Tickets & FAQs** | `GET`/`POST` | `/v1/support/tickets` | [`Support.jsx`](file:///f:/v-tracker-admin/src/pages/Support.jsx) |
+| 23 | **CMS Legal Content** | `GET` | `/v1/content/:slug` | [`CMS.jsx`](file:///f:/v-tracker-admin/src/pages/CMS.jsx) |
+| 24 | **Pincode Lookup** | `GET` | `/v1/lookup/pincode/:pin` | [`Orders.jsx`](file:///f:/v-tracker-admin/src/pages/Orders.jsx) |

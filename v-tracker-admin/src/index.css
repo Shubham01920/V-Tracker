@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", sans-serif;
+  --font-heading: "Funnel Display", sans-serif;
+  
+  --color-primary: #0A1628;
+  --color-background: #F8FAFC;
+  --color-accent: #F5A623;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+}
+
+@layer utilities {
+  .sidebar-collapsed aside {
+    width: 80px !important;
+    transform: none !important;
+  }
+  @media (min-width: 1024px) {
+    .sidebar-collapsed main {
+      margin-left: 80px !important;
+    }
+  }
+
+  .scrollbar-hide {
+    /* IE and Edge */
+    -ms-overflow-style: none;
+    /* Firefox */
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
